@@ -92,8 +92,8 @@ public class Utility {
     }
 
     public static Mat4 GetPerspectiveProjectionMatrix_OpenGL(float near, float far, float fov, int width, int height) {
-        float top = (float) -(near * Math.tan(fov/2));
-        float right = (float) (near * width/height * Math.tan(fov/2));
+        float top = (float) -(near * Math.tan(NMath.toRadians(fov)/2));
+        float right = (float) (near * width/height * Math.tan(NMath.toRadians(fov)/2));
         return new Mat4(new float[][] {
                 {near/right, 0, 0, 0},
                 {0, near/top, 0, 0},
@@ -103,15 +103,17 @@ public class Utility {
     }
 
     public static Mat4 GetWorldToCameraSpaceConversionMatrix(Camera camera) {
-        Vec3 lookAt = NMath.Normalize(new Vec3(NMath.MultiplyVec4ByMat4(camera.getForwardReference(), NMath.MultiplyMat4(NMath.MultiplyMat4(Utility.GetRotationMatrixX(camera.getRotation().x), Utility.GetRotationMatrixY(camera.getRotation().y)), Utility.GetRotationMatrixZ(camera.getRotation().z)))));;
-        Vec3 right = NMath.CrossProduct(lookAt, new Vec3(0, 1, 0));
-        Vec3 up = NMath.CrossProduct(right, lookAt);
-        return new Mat4(new float[][] {
+        Vec3 lookAt = camera.getFront();
+        Vec3 right = camera.getRight();
+        Vec3 up = camera.getUp();
+        Mat4 rotation = new Mat4(new float[][] {
                 {right.x, right.y, right.z, 0},
                 {up.x, up.y, up.z, 0},
                 {lookAt.x, lookAt.y, lookAt.z, 0},
                 {0, 0, 0, 1}
         });
+        Mat4 position = GetTranslationMatrix(camera.getPos().x, camera.getPos().y, camera.getPos().z);
+        return NMath.MultiplyMat4(rotation, position);
     }
 
     public static Mat4 GetModelMatrix(Actor3D actor) {

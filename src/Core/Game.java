@@ -7,8 +7,11 @@ import Core.Rendering.RenderMode;
 import Core.Rendering.Rendering2D.Render2D;
 import Core.Rendering.Rendering3D.Render3D;
 import Utility.Axis;
+import Utility.Math.NMath;
 import Utility.Math.Orientation;
 import Utility.Math.Vec3;
+import Utility.Math.Vec4;
+import Utility.Utility;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +45,7 @@ public class Game extends JPanel {
         this.setPreferredSize(new Dimension(ScreenWidth, ScreenHeight));
         this.setBackground(Color.lightGray);
 
-        camera = new Camera(new Vec3(0, 0, -1), new Orientation(0, 0, 0), 3, ScreenWidth, ScreenHeight);
+        camera = new Camera(new Vec3(0, 0, -3), new Orientation(0, 0, 0), 2, ScreenWidth, ScreenHeight);
         world = new World();
 
         SetRenderMode(mode);
@@ -69,6 +72,7 @@ public class Game extends JPanel {
 
     public void Update(int currentTick) {
         HandleInput();
+        System.out.println(camera.getRotation());
     }
 
     private void SetRenderMode(RenderMode newMode) {
@@ -113,16 +117,16 @@ public class Game extends JPanel {
     public void HandleInput() {
         // MOVEMENT
         if (PressedKeys.contains(Integer.valueOf('W'))) {
-            camera.Move(new Vec3(0, cameraMoveSpeed, 0));
+            camera.Move(new Vec3(NMath.MultiplyVec4ByMat4(new Vec4(camera.getFront(), 1), Utility.GetScalingMatrix(cameraMoveSpeed, 1, 1))));
         }
         if (PressedKeys.contains(Integer.valueOf('S'))) {
-            camera.Move(new Vec3(0, -cameraMoveSpeed, 0));
+            camera.Move(NMath.Multiply(new Vec3(NMath.MultiplyVec4ByMat4(new Vec4(camera.getFront(), 1), Utility.GetScalingMatrix(cameraMoveSpeed, 1, 1))), -1));
         }
         if (PressedKeys.contains(Integer.valueOf('D'))) {
-            camera.Move(new Vec3(-cameraMoveSpeed, 0, 0));
+            camera.Move(new Vec3(cameraMoveSpeed, 0, 0));
         }
         if (PressedKeys.contains(Integer.valueOf('A'))) {
-            camera.Move(new Vec3(cameraMoveSpeed, 0, 0));
+            camera.Move(new Vec3(-cameraMoveSpeed, 0, 0));
         }
 
         // OBJECT ROTATION

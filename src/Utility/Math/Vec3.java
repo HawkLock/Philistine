@@ -36,6 +36,10 @@ public class Vec3 {
         z = vec.z;
     }
 
+    public float product() {
+        return x * y * z;
+    }
+
     public String toString() {
         return "[" + x + ", " + y + ", " + z + "]";
     }

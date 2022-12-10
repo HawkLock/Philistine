@@ -5,6 +5,7 @@ import Utility.Math.NMath;
 import Utility.Math.Orientation;
 import Utility.Math.Vec3;
 import Utility.Math.Vec4;
+import Utility.Utility;
 
 public class Camera {
 
@@ -17,7 +18,7 @@ public class Camera {
     private final Vec4 forwardReference = new Vec4(0, 0, 1, 0);
 
     private float vFOV = 45; // In degrees
-    private float near = 5.0f;
+    private float near = 1.0f;
     private float far = 10.0f;
 
     public Camera(Vec3 initialPosition, Orientation initialRotation, int initialFocalLength, int initialWidth, int initialHeight) {
@@ -26,6 +27,18 @@ public class Camera {
         Width = initialWidth;
         Height = initialHeight;
         Rotation = initialRotation;
+    }
+
+    public Vec3 getFront() {
+        return NMath.Normalize(new Vec3(NMath.MultiplyVec4ByMat4(this.getForwardReference(), NMath.MultiplyMat4(NMath.MultiplyMat4(Utility.GetRotationMatrixX(this.getRotation().x), Utility.GetRotationMatrixY(this.getRotation().y)), Utility.GetRotationMatrixZ(this.getRotation().z)))));
+    }
+
+    public Vec3 getRight() {
+        return  NMath.CrossProduct(getFront(), new Vec3(0, 1, 0));
+    }
+
+    public Vec3 getUp() {
+        return NMath.CrossProduct(getRight(), getFront());
     }
 
     public void Rotate(Orientation rotationChange) {

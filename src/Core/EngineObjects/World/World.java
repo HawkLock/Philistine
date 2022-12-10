@@ -1,13 +1,14 @@
 package Core.EngineObjects.World;
 
 import Core.EngineObjects.Actor.Actor;
+import Core.EngineObjects.Actor.Actor3D;
 import Utility.Math.Vec2;
 
 import java.util.ArrayList;
 
 public class World {
 
-    private ArrayList<Actor> objects = new ArrayList<>();
+    private ArrayList<Actor3D> objects = new ArrayList<>();
 
     public World() {
 
@@ -34,11 +35,11 @@ public class World {
                 extremesA[2].x <= extremesB[2].y && extremesA[2].y >= extremesB[2].x;
     }
 
-    public void AddActor(Actor actor) {
+    public void AddActor(Actor3D actor) {
         objects.add(actor);
     }
 
-    public ArrayList<Actor> getObjects() {
+    public ArrayList<Actor3D> getObjects() {
         return objects;
     }
 }
