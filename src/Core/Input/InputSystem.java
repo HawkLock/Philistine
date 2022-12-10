@@ -1,6 +1,6 @@
 package Core.Input;
 
-import Core.Rendering.Game;
+import Core.Game;
 
 import java.util.ArrayList;
 

@@ -20,6 +20,11 @@ public class Vec2 {
         y = Y;
     }
 
+    public Vec2(int[] values) {
+        x = values[0];
+        y = values[1];
+    }
+
     public String toString() {
         return "[" + x + ", " + y + "]";
     }

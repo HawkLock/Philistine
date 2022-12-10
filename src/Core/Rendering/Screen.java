@@ -1,5 +1,7 @@
 package Core.Rendering;
 
+import Core.Game;
+
 import javax.swing.*;
 import java.awt.event.*;
 

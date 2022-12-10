@@ -8,6 +8,7 @@ import Utility.Axis;
 import Utility.Math.NMath;
 import Utility.Math.Vec2;
 import Utility.Math.Vec3;
+import Utility.Math.Vec4;
 
 public class Actor2D implements Actor{
     public Vec3 pos;
@@ -53,6 +54,11 @@ public class Actor2D implements Actor{
     }
 
     @Override
+    public void MoveTo(Vec3 destination) {
+        pos = destination;
+    }
+
+    @Override
     public Vec3 getPosition() {
         return pos;
     }
@@ -60,5 +66,10 @@ public class Actor2D implements Actor{
     @Override
     public void setPosition(Vec3 position) {
         pos = position;
+    }
+
+    @Override
+    public Vec4 coordinateToWorldSpace(Vec3 cord) {
+        return null;
     }
 }

@@ -9,6 +9,16 @@ public class NMath {
         return (float) (degrees * (Math.PI/180));
     }
 
+    public static float clamp(float value, float min, float max) {
+        if (value < min) {
+            return min;
+        } else if (value > max){
+            return max;
+        } else {
+            return value;
+        }
+    }
+
     //
     //** VECTOR MATH **//
     //
@@ -48,12 +58,16 @@ public class NMath {
         return (float) Math.sqrt(vecA.x*vecA.x + vecA.y*vecA.y + vecA.z*vecA.z);
     }
 
-    public static Vec3 GetNormal(Vec3 vecA) {
+    public static Vec3 Normalize(Vec3 vecA) {
         return Divide(vecA, GetLength(vecA)); // Divides itself by its magnitude
     }
 
-    public static float GetDot(Vec3 vecA, Vec3 vecB) {
+    public static float DotProduct(Vec3 vecA, Vec3 vecB) {
         return (vecA.x * vecB.x) + (vecA.y * vecB.y) + (vecA.z *vecB.z);
+    }
+
+    public static Vec3 CrossProduct(Vec3 a, Vec3 b) {
+        return new Vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
     }
 
     //
@@ -108,5 +122,12 @@ public class NMath {
         return new Vec3(values[0], values[1], values[2]);
     }
 
+    //
+    //** ORIENTATION MATH **//
+    //
+
+    public static Orientation Add(Orientation rotA, Orientation rotB) {
+        return new Orientation((rotA.x + rotB.x) % 360, (rotA.y + rotB.y) % 360, (rotA.z + rotB.z) % 360);
+    }
 
 }

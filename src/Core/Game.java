@@ -1,7 +1,9 @@
-package Core.Rendering;
+package Core;
 
 import Core.Camera;
 import Core.EngineObjects.World.World;
+import Core.Rendering.RenderBus;
+import Core.Rendering.RenderMode;
 import Core.Rendering.Rendering2D.Render2D;
 import Core.Rendering.Rendering3D.Render3D;
 import Utility.Axis;
@@ -26,7 +28,7 @@ public class Game extends JPanel {
 
     private float cameraMoveSpeed = 0.05f;
     private float mouseSpeed = 0.5f;
-    private float modelTurnSpeed = 2f;
+    private float modelTurnSpeed = 10f;
 
     private static double deltaTime = 0.0f;
     private double lastFrame = 0.0f;
@@ -40,7 +42,7 @@ public class Game extends JPanel {
         this.setPreferredSize(new Dimension(ScreenWidth, ScreenHeight));
         this.setBackground(Color.lightGray);
 
-        camera = new Camera(new Vec3(0, 0, -5), new Orientation(270, 180, 0), 3, ScreenWidth, ScreenHeight);
+        camera = new Camera(new Vec3(0, 0, -1), new Orientation(0, 0, 0), 3, ScreenWidth, ScreenHeight);
         world = new World();
 
         SetRenderMode(mode);
@@ -110,38 +112,43 @@ public class Game extends JPanel {
 
     public void HandleInput() {
         // MOVEMENT
-        if (PressedKeys.contains(Integer.valueOf(87))) {
-            camera.Move(new Vec3(0, -cameraMoveSpeed, 0));
-        }
-        if (PressedKeys.contains(Integer.valueOf(83))) {
+        if (PressedKeys.contains(Integer.valueOf('W'))) {
             camera.Move(new Vec3(0, cameraMoveSpeed, 0));
         }
-        if (PressedKeys.contains(Integer.valueOf(68))) {
-            camera.Move(new Vec3(cameraMoveSpeed, 0, 0));
+        if (PressedKeys.contains(Integer.valueOf('S'))) {
+            camera.Move(new Vec3(0, -cameraMoveSpeed, 0));
         }
-        if (PressedKeys.contains(Integer.valueOf(65))) {
+        if (PressedKeys.contains(Integer.valueOf('D'))) {
             camera.Move(new Vec3(-cameraMoveSpeed, 0, 0));
+        }
+        if (PressedKeys.contains(Integer.valueOf('A'))) {
+            camera.Move(new Vec3(cameraMoveSpeed, 0, 0));
         }
 
         // OBJECT ROTATION
         if (PressedKeys.contains(Integer.valueOf(39))) {
-            world.getObjects().get(0).Rotate(modelTurnSpeed, Axis.Y);
+            camera.Rotate(new Orientation(0, modelTurnSpeed, 0));
+            //world.getObjects().get(0).Rotate(modelTurnSpeed, Axis.Y);
         }
         if (PressedKeys.contains(Integer.valueOf(37))) {
-            world.getObjects().get(0).Rotate(-modelTurnSpeed, Axis.Y);
+            camera.Rotate(new Orientation(0, -modelTurnSpeed, 0));
+            //world.getObjects().get(0).Rotate(-modelTurnSpeed, Axis.Y);
         }
         if (PressedKeys.contains(Integer.valueOf(40))) {
-            world.getObjects().get(0).Rotate(-modelTurnSpeed, Axis.X);
+            camera.Rotate(new Orientation(-modelTurnSpeed, 0, 0));
+            //world.getObjects().get(0).Rotate(-modelTurnSpeed, Axis.X);
         }
         if (PressedKeys.contains(Integer.valueOf(38))) {
-            world.getObjects().get(0).Rotate(modelTurnSpeed, Axis.X);
+            camera.Rotate(new Orientation(modelTurnSpeed, 0, 0));
+            //world.getObjects().get(0).Rotate(modelTurnSpeed, Axis.X);
         }
+
         // ZOOMING IN AND OUT
         if (PressedKeys.contains(Integer.valueOf(69))) {
-            camera.Move(new Vec3(0, 0, mouseSpeed));
+            camera.Move(new Vec3(0, 0, -mouseSpeed));
         }
         if (PressedKeys.contains(Integer.valueOf(81))) {
-            camera.Move(new Vec3(0, 0, -mouseSpeed));
+            camera.Move(new Vec3(0, 0, mouseSpeed));
         }
         // CYCLE THROUGH THE DIFFERENT RENDERING MODES (T)
         if (PressedKeys.contains(Integer.valueOf(84))) {

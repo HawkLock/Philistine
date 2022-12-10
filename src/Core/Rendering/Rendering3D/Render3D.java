@@ -2,13 +2,11 @@ package Core.Rendering.Rendering3D;
 
 import Core.Camera;
 import Core.EngineObjects.Actor.Actor;
-import Core.EngineObjects.Actor.Actor2D;
 import Core.Rendering.RenderBus;
 import Utility.Math.*;
 import Utility.Utility;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Render3D {
 
@@ -35,8 +33,8 @@ public class Render3D {
             if (actor != null && actor.getShape() != null) {
                 Vec2[] drawVertices = new Vec2[actor.getShape().getVertices().length];
                 for (int i = 0; i < actor.getShape().getVertices().length; i++) {
-                    int[] cords = vertexToScreenSpace(NMath.Add(actor.getShape().getVertices()[i], actor.getShape().getPosition()), bus.camera);
-                    drawVertices[i] = new Vec2(cords[0], cords[1]);
+                    int[] cords = vertexToScreenSpace_Perspective(actor.coordinateToWorldSpace(actor.getShape().getVertices()[i]), bus.camera);
+                    drawVertices[i] = new Vec2(cords);
                 }
                 // Connects the draw vertices by a line
                 drawConnectingLines(drawVertices, actor.getShape().getDrawOrder(), bus.g2D);
@@ -85,20 +83,16 @@ public class Render3D {
         // Gets their position based off of the projection rendering formula
         float xCord = NMath.Subtract(vertexPos, camera.getPos()).x * (camera.getFocalLength() / Math.abs(NMath.Subtract(vertexPos, camera.getPos()).z));
         float yCord = NMath.Subtract(vertexPos, camera.getPos()).y * (camera.getFocalLength() / Math.abs(NMath.Subtract(vertexPos, camera.getPos()).z)); // Transforms the coordinates to the screen dimensions
+        System.out.printf("%f, %f\n", xCord, yCord);
         xCord = (xCord * camera.getWidth() + camera.getWidth()) / 2;
         yCord = (yCord * camera.getHeight() + camera.getHeight()) / 2;
         return new int[]{(int) xCord, (int) yCord};
     }
 
-    private static int[] vertexToScreenSpace_Perspective (Vec3 vertexPos, Camera camera) {
-        /* KINDA BROKEN
-        Orientation cameraRotation = camera.getRotation();
-        Vec3 d = NMath.MultiplyVec3ByMat3(NMath.Subtract(vertexPos, camera.getPos()), NMath.MultiplyMat3(NMath.MultiplyMat3(Utility.TrimMat4ToMat3(Utility.GetRotationMatrixX(-cameraRotation.x)), Utility.TrimMat4ToMat3(Utility.GetRotationMatrixY(-cameraRotation.y))), Utility.TrimMat4ToMat3(Utility.GetRotationMatrixZ(-cameraRotation.z))));
-        int xCord = (int) (camera.getFocalLength()/d.z * d.x);
-        int yCord = (int) (camera.getFocalLength()/d.z * d.y);
-        return new int[]{xCord, yCord};
-         */
-        return null;
+    private static int[] vertexToScreenSpace_Perspective (Vec4 vertexPos, Camera camera) {
+        Vec4 vertexInCameraSpace = NMath.MultiplyVec4ByMat4(vertexPos, Utility.GetWorldToCameraSpaceConversionMatrix(camera));
+        Vec4 vertexInClipSpace = NMath.MultiplyVec4ByMat4(vertexInCameraSpace, Utility.GetPerspectiveProjectionMatrix_OpenGL(camera.getNear(), camera.getFar(), camera.getvFOV(), camera.getWidth(), camera.getHeight()));
+        return vertexToScreenSpace(new Vec3(vertexInClipSpace), camera);
     }
 
 }
