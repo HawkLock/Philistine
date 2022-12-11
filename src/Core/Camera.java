@@ -1,11 +1,10 @@
 package Core;
 
 import Utility.Axis;
-import Utility.Math.NMath;
-import Utility.Math.Orientation;
-import Utility.Math.Vec3;
-import Utility.Math.Vec4;
+import Utility.Math.*;
 import Utility.Utility;
+
+import java.awt.image.renderable.RenderableImage;
 
 public class Camera {
 
@@ -15,11 +14,11 @@ public class Camera {
     private int Height;
     private Orientation Rotation;
 
-    private final Vec4 forwardReference = new Vec4(0, 0, 1, 0);
+    private final Vec4 forwardReference = new Vec4(0, 0, 1, 1);
 
     private float vFOV = 45; // In degrees
     private float near = 1.0f;
-    private float far = 10.0f;
+    private float far = 1.0f;
 
     public Camera(Vec3 initialPosition, Orientation initialRotation, int initialFocalLength, int initialWidth, int initialHeight) {
         Pos = initialPosition;
@@ -30,11 +29,15 @@ public class Camera {
     }
 
     public Vec3 getFront() {
-        return NMath.Normalize(new Vec3(NMath.MultiplyVec4ByMat4(this.getForwardReference(), NMath.MultiplyMat4(NMath.MultiplyMat4(Utility.GetRotationMatrixX(this.getRotation().x), Utility.GetRotationMatrixY(this.getRotation().y)), Utility.GetRotationMatrixZ(this.getRotation().z)))));
+        Vec3 direction = new Vec3();
+        direction.z = (float) (Math.cos(NMath.toRadians(Rotation.y)) * Math.cos(NMath.toRadians(Rotation.x)));
+        direction.y = (float) Math.sin(NMath.toRadians(Rotation.x));
+        direction.x = (float) (Math.sin(NMath.toRadians(Rotation.y)) * Math.cos(NMath.toRadians(Rotation.x)));
+        return NMath.Normalize(direction);
     }
 
     public Vec3 getRight() {
-        return  NMath.CrossProduct(getFront(), new Vec3(0, 1, 0));
+        return NMath.Normalize(NMath.CrossProduct(getFront(), NMath.Normalize(new Vec3(0, 1, 0))));
     }
 
     public Vec3 getUp() {

@@ -67,12 +67,12 @@ public class Game extends JPanel {
 
         // Renders the frame rate
         g2D.drawString("FPS: " + currentFrameRate, 20, 20);
+        g2D.drawString("Rotation: " + camera.getRotation(), 20, 50);
 
     }
 
     public void Update(int currentTick) {
         HandleInput();
-        //System.out.println(camera.getRotation());
     }
 
     private void SetRenderMode(RenderMode newMode) {
@@ -117,7 +117,7 @@ public class Game extends JPanel {
     public void HandleInput() {
         // MOVEMENT
         if (PressedKeys.contains(Integer.valueOf('W'))) {
-            camera.Move(new Vec3(NMath.MultiplyVec4ByMat4(new Vec4(camera.getFront(), 1), Utility.GetScalingMatrix(cameraMoveSpeed, 1, 1))));
+            camera.Move(NMath.Multiply(camera.getFront(), cameraMoveSpeed*50));
         }
         if (PressedKeys.contains(Integer.valueOf('S'))) {
             camera.Move(NMath.Multiply(new Vec3(NMath.MultiplyVec4ByMat4(new Vec4(camera.getFront(), 1), Utility.GetScalingMatrix(cameraMoveSpeed, 1, 1))), -1));

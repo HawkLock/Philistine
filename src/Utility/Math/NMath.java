@@ -148,7 +148,7 @@ public class NMath {
     //
 
     public static Orientation Add(Orientation rotA, Orientation rotB) {
-        return new Orientation(clamp(rotA.x + rotB.x, -180, 180), (rotA.y + rotB.y) % 360, clamp(rotA.z + rotB.z, -90, 90));
+        return new Orientation(clamp(rotA.x + rotB.x, -90, 90), (rotA.y + rotB.y) % 360, rotA.z + rotB.z);
     }
 
 }

@@ -40,12 +40,12 @@ public class Render3D {
                     drawVertices[i] = new Vec2(cords);
                 }
                 // Connects the draw vertices by a line
-                drawConnectingLines(drawVertices, actor.getShape().getDrawOrder(), bus.g2D);
+                drawConnectingLines(drawVertices, actor.getShape().getDrawOrder(), bus.g2D, bus.camera);
             }
         }
     }
 
-    private static void drawConnectingLines(Vec2[] drawVertices, int[][] drawOrder, Graphics2D g2D) {
+    private static void drawConnectingLines(Vec2[] drawVertices, int[][] drawOrder, Graphics2D g2D, Camera camera) {
         for (int i = 0 ; i < drawOrder.length; i++) {
             for (int z = 0; z < drawOrder[i].length; z++) {
                 Vec2 pointA = drawVertices[drawOrder[i][z]-1];
@@ -113,8 +113,6 @@ public class Render3D {
         Mat4 view = Utility.GetWorldToCameraSpaceConversionMatrix(camera);
         Mat4 projection = Utility.GetPerspectiveProjectionMatrix_OpenGL(camera.getNear(), camera.getFar(), camera.getvFOV(), camera.getWidth(), camera.getHeight());
         Vec4 outputVertex = NMath.MultiplyVec4ByMat4(NMath.MultiplyVec4ByMat4(NMath.MultiplyVec4ByMat4(vertex, model), view), projection);
-        //System.out.println(toNormalizedDeviceCoordinates(outputVertex));
-        //return vertexToScreenSpace(toNormalizedDeviceCoordinates(outputVertex), camera);
         return NDCToWindow(toNormalizedDeviceCoordinates(outputVertex), camera);
     }
 
@@ -122,5 +120,17 @@ public class Render3D {
         return point.x < 0 || point.x > camera.getWidth() || point.y < 0 || point.y > camera.getHeight();
     }
 
+    private static boolean shouldClip(Vec2 point, Camera camera) {
+        Vec3 objectToCamera = NMath.Subtract(new Vec3(point.x, point.y, 0), camera.getPos());
+
+// Normalize the vector
+        objectToCamera = NMath.Normalize(new Vec3(objectToCamera.x, objectToCamera.y, 0));
+
+// Compute the dot product of the objectToCamera vector and the camera's view direction vector
+        float dotProduct = NMath.DotProduct(objectToCamera, camera.getFront());
+
+// If the dot product is positive, then the object is within the camera's field of view and can be rendered
+        return !(dotProduct > 0);
+    }
 
 }

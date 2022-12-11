@@ -37,6 +37,18 @@ public class Mat4 {
         return returnArr;
     }
 
+    public void Negate() {
+        for (int i = 0; i < elements.length; i++) {
+            for (int z = 0; z < elements[i].length; z++) {
+                elements[i][z] = -elements[i][z];
+            }
+        }
+    }
+
+    public float[][] getElements() {
+        return elements;
+    }
+
     public String toString() {
         String str = "";
         for (int i = 0; i < 4; i++) {

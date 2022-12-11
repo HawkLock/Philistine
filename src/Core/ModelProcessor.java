@@ -47,7 +47,6 @@ public class ModelProcessor {
             }
         }
         scanner.close();
-        System.out.println(Arrays.deepToString(convertArraylistToArrayArr(order)));
         // Converts arraylist of vertices into easier to use array
         return convertArraylistToArrayArr(order);
     }
