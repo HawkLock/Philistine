@@ -72,7 +72,7 @@ public class Game extends JPanel {
 
     public void Update(int currentTick) {
         HandleInput();
-        System.out.println(camera.getRotation());
+        //System.out.println(camera.getRotation());
     }
 
     private void SetRenderMode(RenderMode newMode) {

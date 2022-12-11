@@ -25,6 +25,12 @@ public class Vec2 {
         y = values[1];
     }
 
+    // Loses z axis
+    public Vec2(Vec3 vec) {
+        x = vec.x;
+        y = vec.y;
+    }
+
     public String toString() {
         return "[" + x + ", " + y + "]";
     }

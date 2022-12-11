@@ -71,6 +71,27 @@ public class NMath {
     }
 
     //
+    //** LINE MATH **//
+    //
+
+    public static boolean areClockwise(Vec2 pointA, Vec2 pointB, Vec2 pointC) {
+        return (pointC.y-pointA.y)*(pointB.x-pointA.x) > (pointB.y-pointA.y)*(pointC.x-pointA.x);
+    }
+
+    public static boolean lineLineIntersection(Line2 lineA, Line2 lineB) {
+        return areClockwise(lineA.start, lineB.start, lineB.end) != areClockwise(lineA.end, lineB.start, lineB.end) &&
+                areClockwise(lineA.start, lineA.end, lineB.start) != areClockwise(lineA.start, lineA.end, lineB.end);
+    }
+
+    public static boolean lineRectIntersection(Line2 lineA, Vec2 rectOrigin, int width, int height) {
+        Line2 top = new Line2(rectOrigin, new Vec2(rectOrigin.x + width, rectOrigin.y));
+        Line2 bottom = new Line2(new Vec2(rectOrigin.x, rectOrigin.y + height), new Vec2(rectOrigin.x + width, rectOrigin.y + height));
+        Line2 left = new Line2(rectOrigin, new Vec2(rectOrigin.x, rectOrigin.y + height));
+        Line2 right = new Line2(new Vec2(rectOrigin.x + width, rectOrigin.y), new Vec2(rectOrigin.x + width, rectOrigin.y + height));
+        return lineLineIntersection(lineA, top) || lineLineIntersection(lineA, bottom) || lineLineIntersection(lineA, left) || lineLineIntersection(lineA, right);
+    }
+
+    //
     //** MATRIX MATH **//
     //
 

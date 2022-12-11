@@ -6,6 +6,7 @@ import Utility.Math.Vec3;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class ModelProcessor {
@@ -46,6 +47,7 @@ public class ModelProcessor {
             }
         }
         scanner.close();
+        System.out.println(Arrays.deepToString(convertArraylistToArrayArr(order)));
         // Converts arraylist of vertices into easier to use array
         return convertArraylistToArrayArr(order);
     }

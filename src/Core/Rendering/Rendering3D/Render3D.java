@@ -1,14 +1,12 @@
 package Core.Rendering.Rendering3D;
 
 import Core.Camera;
-import Core.EngineObjects.Actor.Actor;
 import Core.EngineObjects.Actor.Actor3D;
 import Core.Rendering.RenderBus;
 import Utility.Math.*;
 import Utility.Utility;
 
 import java.awt.*;
-import java.util.Arrays;
 
 public class Render3D {
 
@@ -42,16 +40,16 @@ public class Render3D {
                     drawVertices[i] = new Vec2(cords);
                 }
                 // Connects the draw vertices by a line
-                drawConnectingLines(drawVertices, actor.getShape().getDrawOrder(), bus.g2D, bus.camera);
+                drawConnectingLines(drawVertices, actor.getShape().getDrawOrder(), bus.g2D);
             }
         }
     }
 
-    private static void drawConnectingLines(Vec2[] drawVertices,  int[][] drawOrder, Graphics2D g2D, Camera camera) {
+    private static void drawConnectingLines(Vec2[] drawVertices, int[][] drawOrder, Graphics2D g2D) {
         for (int i = 0 ; i < drawOrder.length; i++) {
             for (int z = 0; z < drawOrder[i].length; z++) {
                 Vec2 pointA = drawVertices[drawOrder[i][z]-1];
-                Vec2 pointB = drawVertices[drawOrder[i][(z + 1) % 3]-1];
+                Vec2 pointB = drawVertices[drawOrder[i][(z + 1) % drawOrder[i].length]-1];
                 drawLine(pointA, pointB, g2D);
             }
         }
@@ -105,9 +103,8 @@ public class Render3D {
     }
 
     private static int[] NDCToWindow(Vec3 ndc, Camera camera) {
-        int xCord = (int) (((ndc.x) / 2) * camera.getWidth());
-        int yCord = (int) (((ndc.y) / 2) * camera.getHeight());
-        //System.out.println(ndc);
+        int xCord = (int) ((ndc.x * camera.getWidth() + camera.getWidth())/2);
+        int yCord = (int) ((ndc.y * camera.getHeight() + camera.getHeight())/2);
         return new int[]{xCord, yCord};
     }
 
@@ -120,5 +117,10 @@ public class Render3D {
         //return vertexToScreenSpace(toNormalizedDeviceCoordinates(outputVertex), camera);
         return NDCToWindow(toNormalizedDeviceCoordinates(outputVertex), camera);
     }
+
+    private static boolean outsideClipPlane(Vec2 point, Camera camera) {
+        return point.x < 0 || point.x > camera.getWidth() || point.y < 0 || point.y > camera.getHeight();
+    }
+
 
 }
