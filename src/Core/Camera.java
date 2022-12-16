@@ -20,6 +20,7 @@ public class Camera {
     private float near = 1.0f;
     private float far = 1.0f;
 
+
     public Camera(Vec3 initialPosition, Orientation initialRotation, int initialFocalLength, int initialWidth, int initialHeight) {
         Pos = initialPosition;
         FocalLength = initialFocalLength;
@@ -48,6 +49,11 @@ public class Camera {
     public void Rotate(Orientation rotationChange) {
         Rotation = NMath.Add(Rotation, rotationChange);
     }
+
+    public void Rotate(Vec3 rotationChange) {
+        Rotation = NMath.Add(Rotation, new Orientation(rotationChange));
+    }
+
 
     public Vec3 getPos() {
         return Pos;
@@ -108,4 +114,5 @@ public class Camera {
     public Vec4 getForwardReference() {
         return forwardReference;
     }
+
 }

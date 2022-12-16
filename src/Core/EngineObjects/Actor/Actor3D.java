@@ -61,6 +61,10 @@ public class Actor3D implements Actor{
         return orientation;
     }
 
+    public void Scale(float scalar) {
+        shape.Scale(scalar);
+    }
+
     public void setOrientation(Orientation orientation) {
         this.orientation = orientation;
     }

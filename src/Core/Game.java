@@ -23,24 +23,22 @@ import java.util.function.Consumer;
 
 public class Game extends JPanel {
 
-    private int ScreenWidth = 1000;
-    private int ScreenHeight = 1000;
+    private final int ScreenWidth = 1000;
+    private final int ScreenHeight = 1000;
 
-    private Camera camera;
+    private final Camera camera;
     private static World world;
 
-    private float cameraMoveSpeed = 0.25f;
-    private float zoomSpeed = 0.5f;
-    private float modelTurnSpeed = 10f;
-    private Vec3 cameraMovementModifier = new Vec3(1, -1, 1); // Modification because of the coordinate system mismatch
-    private Vec3 cameraNegativeMovementModifier = new Vec3(-1, 1, -1); // Modification because of the coordinate system mismatch
+    private final float cameraMoveSpeed = 0.25f;
+    private final float zoomSpeed = 0.5f;
+    private final float modelTurnSpeed = 10f;
+    private final Vec3 cameraMovementModifier = new Vec3(1, -1, 1); // Modification because of the coordinate system mismatch
+    private final Vec3 cameraNegativeMovementModifier = new Vec3(-1, 1, -1); // Modification because of the coordinate system mismatch
 
     private static double deltaTime = 0.0f;
     private double lastFrame = 0.0f;
 
-    private static int renderModeIndex; // 1 = TEXTURE, 2 = SOLID, 3 = WIREFRAME
     private static Consumer<RenderBus> renderModeReference;
-
 
     List<Integer> PressedKeys = new ArrayList<>();
 
@@ -71,7 +69,7 @@ public class Game extends JPanel {
         // Renders the frame rate
         g2D.drawString("FPS: " + currentFrameRate, 20, 20);
         g2D.drawString("Rotation: " + camera.getRotation(), 20, 50);
-        g2D.drawString("Forward: " + camera.getFront(), 20, 80);
+        g2D.drawString("Camera Forward: " + camera.getFront(), 20, 80);
 
     }
 
@@ -81,40 +79,8 @@ public class Game extends JPanel {
 
     private void SetRenderMode(RenderMode newMode) {
         switch (newMode) {
-            case TEXTURE:
-                renderModeReference = Render3D::Render_Solid; // CURRENTLY SETS RENDER MODE TO SOLID UNTIL TEXTURES ARE IMPLEMENTED
-                renderModeIndex = 1;
-                break;
-            case SOLID:
-                renderModeReference = Render3D::Render_Solid;
-                renderModeIndex = 2;
-                break;
-            case WIREFRAME:
-                renderModeReference = Render3D::Render_Wireframe;
-                renderModeIndex = 3;
-                break;
-            case SPRITE:
-                renderModeReference = Render2D::Render_Sprite;
-                renderModeIndex = 4;
-                break;
-        }
-    }
-
-    private void CycleRenderMode() {
-        renderModeIndex = (renderModeIndex + 1) % 4 + 1; // Increments mode by one and loops around if it has to
-        switch (renderModeIndex) {
-            case 1:
-                SetRenderMode(RenderMode.TEXTURE);
-                break;
-            case 2:
-                SetRenderMode(RenderMode.SOLID);
-                break;
-            case 3:
-                SetRenderMode(RenderMode.WIREFRAME);
-                break;
-            case 4:
-                SetRenderMode(RenderMode.SPRITE);
-                break;
+            case SOLID -> renderModeReference = Render3D::Render_Solid;
+            case WIREFRAME -> renderModeReference = Render3D::Render_Wireframe;
         }
     }
 
@@ -133,34 +99,34 @@ public class Game extends JPanel {
             camera.Move(NMath.Multiply(NMath.Multiply(camera.getRight(), cameraMoveSpeed), cameraMovementModifier));
         }
 
-        // OBJECT ROTATION
+        // Camera ROTATION
         if (PressedKeys.contains(Integer.valueOf(39))) {
-            camera.Rotate(new Orientation(0, modelTurnSpeed, 0));
-            //world.getObjects().get(0).Rotate(modelTurnSpeed, Axis.Y);
+            camera.Rotate(new Vec3(0, modelTurnSpeed, 0));
         }
         if (PressedKeys.contains(Integer.valueOf(37))) {
-            camera.Rotate(new Orientation(0, -modelTurnSpeed, 0));
-            //world.getObjects().get(0).Rotate(-modelTurnSpeed, Axis.Y);
+            camera.Rotate(new Vec3(0, -modelTurnSpeed, 0));
         }
         if (PressedKeys.contains(Integer.valueOf(40))) {
-            camera.Rotate(new Orientation(-modelTurnSpeed, 0, 0));
-            //world.getObjects().get(0).Rotate(-modelTurnSpeed, Axis.X);
+            camera.Rotate(new Vec3(-modelTurnSpeed, 0, 0));
         }
         if (PressedKeys.contains(Integer.valueOf(38))) {
-            camera.Rotate(new Orientation(modelTurnSpeed, 0, 0));
-            //world.getObjects().get(0).Rotate(modelTurnSpeed, Axis.X);
+            camera.Rotate(new Vec3(modelTurnSpeed, 0, 0));
         }
 
         // ZOOMING IN AND OUT
-        if (PressedKeys.contains(Integer.valueOf(69))) {
+        if (PressedKeys.contains((int) 'E')) {
             camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed), cameraMovementModifier));
         }
-        if (PressedKeys.contains(Integer.valueOf(81))) {
+        if (PressedKeys.contains((int) 'Q')) {
             camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed), cameraNegativeMovementModifier));
         }
-        // CYCLE THROUGH THE DIFFERENT RENDERING MODES (T)
-        if (PressedKeys.contains(Integer.valueOf(84))) {
-            CycleRenderMode();
+
+        // SETTING RENDERING MODES
+        if (PressedKeys.contains((int) '1')) {
+            SetRenderMode(RenderMode.SOLID);
+        }
+        if (PressedKeys.contains((int) '2')) {
+            SetRenderMode(RenderMode.WIREFRAME);
         }
     }
 

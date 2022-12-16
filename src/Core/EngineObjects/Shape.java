@@ -9,7 +9,7 @@ import Utility.Utility;
 public class Shape {
 
     private Vec3 position = new Vec3();
-    private Vec3[] vertices;
+    private final Vec3[] vertices;
     private int[][] drawOrder;
 
     public Shape(Vec3[] initialVertices) {
@@ -39,5 +39,11 @@ public class Shape {
 
     public Vec3[] getVertices() {
         return vertices;
+    }
+
+    public void Scale(float scalar) {
+        for (int i = 0; i < vertices.length; i++) {
+            vertices[i] = NMath.Multiply(vertices[i], scalar);
+        }
     }
 }
