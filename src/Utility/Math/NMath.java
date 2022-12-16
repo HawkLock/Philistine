@@ -35,7 +35,7 @@ public class NMath {
     }
 
     public static Vec3 Multiply(Vec3 vecA, float factorToMulti) {
-        return new Vec3(vecA.x * factorToMulti, vecA.y * factorToMulti, vecA.y * factorToMulti);
+        return new Vec3(vecA.x * factorToMulti, vecA.y * factorToMulti, vecA.z * factorToMulti);
     }
 
     public static Vec3 Divide(Vec3 vecA, Vec3 vecB) {

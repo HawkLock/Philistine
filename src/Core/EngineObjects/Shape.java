@@ -25,26 +25,6 @@ public class Shape {
         position = NMath.Add(position, moveVector);
     }
 
-    public void Rotate(float angle, Axis axis) {
-        switch (axis) {
-            case X:
-                for (int i = 0; i < vertices.length; i++) {
-                    vertices[i] = new Vec3(NMath.MultiplyVec4ByMat4(new Vec4(vertices[i], 1), Utility.GetRotationMatrixX(angle)));
-                }
-                break;
-            case Y:
-                for (int i = 0; i < vertices.length; i++) {
-                    vertices[i] = new Vec3(NMath.MultiplyVec4ByMat4(new Vec4(vertices[i], 1), Utility.GetRotationMatrixY(angle)));
-                }
-                break;
-            case Z:
-                for (int i = 0; i < vertices.length; i++) {
-                    vertices[i] = new Vec3(NMath.MultiplyVec4ByMat4(new Vec4(vertices[i], 1), Utility.GetRotationMatrixZ(angle)));
-                }
-                break;
-        }
-    }
-
     public Vec3 getPosition() {
         return position;
     }

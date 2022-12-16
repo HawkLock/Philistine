@@ -34,8 +34,8 @@ public class Actor3D implements Actor{
         return null;
     }
 
-    public void Rotate(float angle, Axis axis) {
-        shape.Rotate(angle, axis);
+    public void Rotate(float angle, Vec3 referenceAxis) {
+        orientation = NMath.Add(orientation, new Orientation(NMath.Multiply(referenceAxis, angle)));
     }
 
     public void Move(Vec3 movementVector) {

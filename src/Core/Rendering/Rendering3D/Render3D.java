@@ -7,6 +7,7 @@ import Utility.Math.*;
 import Utility.Utility;
 
 import java.awt.*;
+import java.util.Arrays;
 
 public class Render3D {
 
@@ -18,8 +19,8 @@ public class Render3D {
                 Vec2[] drawVertices = new Vec2[actor.getShape().getVertices().length];
                 for (int i = 0; i < actor.getShape().getVertices().length; i++) {
                     //int[] cords = vertexToScreenSpace(NMath.Add(actor.getShape().getVertices()[i], actor.getShape().getPosition()), bus.camera);
-                    int[] cords = getViewportCoordinates(new Vec4(actor.getShape().getVertices()[i], 1), actor, bus.camera);
-                    drawVertices[i] = new Vec2(cords[0], cords[1]);
+                    Vec2 cords = getViewportCoordinates(new Vec4(actor.getShape().getVertices()[i], 1), actor, bus.camera);
+                    drawVertices[i] = cords;
                 }
                 // Draws each polygon (no depth culling currently)
                 drawFace(drawVertices, actor.getShape().getDrawOrder(), bus.g2D);
@@ -35,9 +36,8 @@ public class Render3D {
                 Vec2[] drawVertices = new Vec2[actor.getShape().getVertices().length];
                 for (int i = 0; i < actor.getShape().getVertices().length; i++) {
                     //int[] cords = vertexToScreenSpace_Perspective(actor.coordinateToWorldSpace(actor.getShape().getVertices()[i]), bus.camera);
-                    int[] cords = getViewportCoordinates(new Vec4(actor.getShape().getVertices()[i], 1), actor, bus.camera);
-                    //System.out.println(Arrays.toString(cords));
-                    drawVertices[i] = new Vec2(cords);
+                    Vec2 cords = getViewportCoordinates(new Vec4(actor.getShape().getVertices()[i], 1), actor, bus.camera);
+                    drawVertices[i] = cords;
                 }
                 // Connects the draw vertices by a line
                 drawConnectingLines(drawVertices, actor.getShape().getDrawOrder(), bus.g2D, bus.camera);
@@ -50,7 +50,9 @@ public class Render3D {
             for (int z = 0; z < drawOrder[i].length; z++) {
                 Vec2 pointA = drawVertices[drawOrder[i][z]-1];
                 Vec2 pointB = drawVertices[drawOrder[i][(z + 1) % drawOrder[i].length]-1];
-                drawLine(pointA, pointB, g2D);
+                if (pointA != null && pointB != null) {
+                    drawLine(pointA, pointB, g2D);
+                }
             }
         }
     }
@@ -61,8 +63,13 @@ public class Render3D {
             for (int z = 0; z < drawOrder[i].length; z++) {
                 currentVertices[z] = drawVertices[drawOrder[i][z]-1];
             }
+            for (int v = 0; v < currentVertices.length; v++) {
+                if (currentVertices[v] == null) {
+                    return;
+                }
+            }
             int[][] cords = getDrawPolygonCords(currentVertices);
-            g2D.fillPolygon(cords[0], cords[1], 3);
+            g2D.fillPolygon(cords[0], cords[1], drawOrder[i].length);
         }
     }
 
@@ -102,17 +109,21 @@ public class Render3D {
         return new Vec3(cord.x/cord.w, cord.y/cord.w, cord.z/cord.w);
     }
 
-    private static int[] NDCToWindow(Vec3 ndc, Camera camera) {
+    private static Vec2 NDCToWindow(Vec3 ndc, Camera camera) {
         int xCord = (int) ((ndc.x * camera.getWidth() + camera.getWidth())/2);
         int yCord = (int) ((ndc.y * camera.getHeight() + camera.getHeight())/2);
-        return new int[]{xCord, yCord};
+        return new Vec2(xCord, yCord);
     }
 
-    private static int[] getViewportCoordinates(Vec4 vertex, Actor3D actor, Camera camera) {
+    private static Vec2 getViewportCoordinates(Vec4 vertex, Actor3D actor, Camera camera) {
         Mat4 model = Utility.GetModelMatrix(actor);
         Mat4 view = Utility.GetWorldToCameraSpaceConversionMatrix(camera);
         Mat4 projection = Utility.GetPerspectiveProjectionMatrix_OpenGL(camera.getNear(), camera.getFar(), camera.getvFOV(), camera.getWidth(), camera.getHeight());
         Vec4 outputVertex = NMath.MultiplyVec4ByMat4(NMath.MultiplyVec4ByMat4(NMath.MultiplyVec4ByMat4(vertex, model), view), projection);
+        Vec3 output = toNormalizedDeviceCoordinates(outputVertex);
+        if (Float.isInfinite(output.z)) {
+            return null;
+        }
         return NDCToWindow(toNormalizedDeviceCoordinates(outputVertex), camera);
     }
 

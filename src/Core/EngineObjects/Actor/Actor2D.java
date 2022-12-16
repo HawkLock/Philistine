@@ -44,11 +44,6 @@ public class Actor2D implements Actor{
     }
 
     @Override
-    public void Rotate(float angle, Axis axis) {
-
-    }
-
-    @Override
     public void Move(Vec3 movementVector) {
         pos = NMath.Add(pos, movementVector);
     }

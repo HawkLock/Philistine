@@ -12,8 +12,6 @@ public interface Actor {
     Vec3 getPos();
     CollisionComponent getCollisionComponent();
 
-    void Rotate(float angle, Axis axis);
-
     void Move(Vec3 movementVector);
 
     void MoveTo(Vec3 destination);

@@ -29,15 +29,18 @@ public class Game extends JPanel {
     private Camera camera;
     private static World world;
 
-    private float cameraMoveSpeed = 0.05f;
-    private float mouseSpeed = 0.5f;
+    private float cameraMoveSpeed = 0.25f;
+    private float zoomSpeed = 0.5f;
     private float modelTurnSpeed = 10f;
+    private Vec3 cameraMovementModifier = new Vec3(1, -1, 1); // Modification because of the coordinate system mismatch
+    private Vec3 cameraNegativeMovementModifier = new Vec3(-1, 1, -1); // Modification because of the coordinate system mismatch
 
     private static double deltaTime = 0.0f;
     private double lastFrame = 0.0f;
 
     private static int renderModeIndex; // 1 = TEXTURE, 2 = SOLID, 3 = WIREFRAME
     private static Consumer<RenderBus> renderModeReference;
+
 
     List<Integer> PressedKeys = new ArrayList<>();
 
@@ -68,6 +71,7 @@ public class Game extends JPanel {
         // Renders the frame rate
         g2D.drawString("FPS: " + currentFrameRate, 20, 20);
         g2D.drawString("Rotation: " + camera.getRotation(), 20, 50);
+        g2D.drawString("Forward: " + camera.getFront(), 20, 80);
 
     }
 
@@ -116,17 +120,17 @@ public class Game extends JPanel {
 
     public void HandleInput() {
         // MOVEMENT
-        if (PressedKeys.contains(Integer.valueOf('W'))) {
-            camera.Move(NMath.Multiply(camera.getFront(), cameraMoveSpeed*50));
+        if (PressedKeys.contains((int) 'W')) {
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), cameraMoveSpeed), cameraMovementModifier));
         }
-        if (PressedKeys.contains(Integer.valueOf('S'))) {
-            camera.Move(NMath.Multiply(new Vec3(NMath.MultiplyVec4ByMat4(new Vec4(camera.getFront(), 1), Utility.GetScalingMatrix(cameraMoveSpeed, 1, 1))), -1));
+        if (PressedKeys.contains((int) 'S')) {
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), cameraMoveSpeed), cameraNegativeMovementModifier));
         }
-        if (PressedKeys.contains(Integer.valueOf('D'))) {
-            camera.Move(new Vec3(cameraMoveSpeed, 0, 0));
+        if (PressedKeys.contains((int) 'D')) {
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getRight(), cameraMoveSpeed), cameraNegativeMovementModifier));
         }
-        if (PressedKeys.contains(Integer.valueOf('A'))) {
-            camera.Move(new Vec3(-cameraMoveSpeed, 0, 0));
+        if (PressedKeys.contains((int) 'A')) {
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getRight(), cameraMoveSpeed), cameraMovementModifier));
         }
 
         // OBJECT ROTATION
@@ -149,10 +153,10 @@ public class Game extends JPanel {
 
         // ZOOMING IN AND OUT
         if (PressedKeys.contains(Integer.valueOf(69))) {
-            camera.Move(new Vec3(0, 0, -mouseSpeed));
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed), cameraMovementModifier));
         }
         if (PressedKeys.contains(Integer.valueOf(81))) {
-            camera.Move(new Vec3(0, 0, mouseSpeed));
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed), cameraNegativeMovementModifier));
         }
         // CYCLE THROUGH THE DIFFERENT RENDERING MODES (T)
         if (PressedKeys.contains(Integer.valueOf(84))) {
@@ -176,10 +180,10 @@ public class Game extends JPanel {
 
     public void HandleMouseWheelInput(MouseWheelEvent e) {
         if (e.getWheelRotation() < 0) {
-            camera.Move(new Vec3(0, 0, mouseSpeed));
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed), cameraMovementModifier));
         }
         else {
-            camera.Move(new Vec3(0, 0, -mouseSpeed));
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed),cameraNegativeMovementModifier));
         }
     }
 

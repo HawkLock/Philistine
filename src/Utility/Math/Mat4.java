@@ -21,6 +21,18 @@ public class Mat4 {
         }
     }
 
+    public Mat4(double[][] values) {
+        if (values.length != 4 || values[0].length != 4) {
+            throw new ArithmeticException();
+        }
+        elements = new float[4][4];
+        for (int i = 0; i < values.length; i++) {
+            for (int z = 0; z < values[0].length; z++) {
+                elements[i][z] = (float) values[i][z];
+            }
+        }
+    }
+
     public float[] getRow(int index) {
         float[] returnArr = new float[4];
         for (int i = 0; i < 4; i++) {

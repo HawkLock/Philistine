@@ -14,4 +14,10 @@ public class Orientation extends Vec3 {
         super(X, Y, Z);
     }
 
+    public Orientation(Vec3 axis) {
+        x = axis.x;
+        y = axis.y;
+        z = axis.z;
+    }
+
 }

@@ -41,8 +41,9 @@ public class Camera {
     }
 
     public Vec3 getUp() {
-        return NMath.CrossProduct(getRight(), getFront());
+        return NMath.Normalize(NMath.CrossProduct(getRight(), getFront()));
     }
+
 
     public void Rotate(Orientation rotationChange) {
         Rotation = NMath.Add(Rotation, rotationChange);
