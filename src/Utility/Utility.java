@@ -118,7 +118,6 @@ public class Utility {
         });
         Mat4 translationMatrix = GetTranslationMatrix(camera.getPos().x, camera.getPos().y, camera.getPos().z);
         return NMath.MultiplyMat4(rotationMatrix, translationMatrix);
-
     }
 
     public static Mat4 GetModelMatrix(Actor3D actor) {

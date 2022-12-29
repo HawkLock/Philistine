@@ -35,6 +35,13 @@ public class Vec4 {
         w = W;
     }
 
+    public Vec4(Orientation orientation, float W) {
+        x = orientation.x;
+        y = orientation.y;
+        z = orientation.z;
+        w = W;
+    }
+
     public String toString() {
         return "[" + x + ", " + y + ", " + z + ", " + w + "]";
     }

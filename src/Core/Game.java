@@ -7,10 +7,7 @@ import Core.Rendering.RenderMode;
 import Core.Rendering.Rendering2D.Render2D;
 import Core.Rendering.Rendering3D.Render3D;
 import Utility.Axis;
-import Utility.Math.NMath;
-import Utility.Math.Orientation;
-import Utility.Math.Vec3;
-import Utility.Math.Vec4;
+import Utility.Math.*;
 import Utility.Utility;
 
 import javax.swing.*;
@@ -70,6 +67,7 @@ public class Game extends JPanel {
         g2D.drawString("FPS: " + currentFrameRate, 20, 20);
         g2D.drawString("Rotation: " + camera.getRotation(), 20, 50);
         g2D.drawString("Camera Forward: " + camera.getFront(), 20, 80);
+        //System.out.println();
 
     }
 

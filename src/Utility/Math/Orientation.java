@@ -20,4 +20,10 @@ public class Orientation extends Vec3 {
         z = axis.z;
     }
 
+    public Orientation(Vec4 axis) {
+        x = axis.x;
+        y = axis.y;
+        z = axis.z;
+    }
+
 }

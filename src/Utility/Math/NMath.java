@@ -70,6 +70,10 @@ public class NMath {
         return new Vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
     }
 
+    public static float Distance(Vec3 vecA, Vec3 vecB) {
+        return (float) Math.sqrt(Math.pow((vecA.x-vecB.x), 2) + Math.pow((vecA.y-vecB.y), 2) + Math.pow((vecA.z-vecB.z), 2));
+    }
+
     //
     //** LINE MATH **//
     //

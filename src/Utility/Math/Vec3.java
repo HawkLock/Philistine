@@ -36,6 +36,12 @@ public class Vec3 {
         z = vec.z;
     }
 
+    public Vec3(Orientation orientation) {
+        x = orientation.x;
+        y = orientation.y;
+        z = orientation.z;
+    }
+
     public float product() {
         return x * y * z;
     }

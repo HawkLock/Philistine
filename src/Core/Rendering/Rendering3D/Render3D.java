@@ -12,14 +12,21 @@ import java.util.Arrays;
 public class Render3D {
 
     public static void Render_Solid(RenderBus bus) {
+        // Initializes the view matrix and projection matrix because those do not change throughout the frame
+        Mat4 view = Utility.GetWorldToCameraSpaceConversionMatrix(bus.camera);
+        Mat4 projection = Utility.GetPerspectiveProjectionMatrix_OpenGL(bus.camera.getNear(), bus.camera.getFar(), bus.camera.getvFOV(), bus.camera.getWidth(), bus.camera.getHeight());
+
         // Draws each vertex
         for (Actor3D actor : bus.world.getObjects()) {
+            // Initializes the model matrix for the specific model once
+            Mat4 model = Utility.GetModelMatrix(actor);
+
             // Transforms the vertices to a form that can be rendered on screen
             if (actor != null) {
                 Vec2[] drawVertices = new Vec2[actor.getShape().getVertices().length];
                 for (int i = 0; i < actor.getShape().getVertices().length; i++) {
                     //int[] cords = vertexToScreenSpace(NMath.Add(actor.getShape().getVertices()[i], actor.getShape().getPosition()), bus.camera);
-                    Vec2 cords = getViewportCoordinates(new Vec4(actor.getShape().getVertices()[i], 1), actor, bus.camera);
+                    Vec2 cords = getViewportCoordinates(new Vec4(actor.getShape().getVertices()[i], 1), actor, bus.camera, model, view, projection);
                     drawVertices[i] = cords;
                 }
                 // Draws each polygon (no depth culling currently)
@@ -29,14 +36,21 @@ public class Render3D {
     }
 
     public static void Render_Wireframe(RenderBus bus) {
+        // Initializes the view matrix and projection matrix because those do not change throughout the frame
+        Mat4 view = Utility.GetWorldToCameraSpaceConversionMatrix(bus.camera);
+        Mat4 projection = Utility.GetPerspectiveProjectionMatrix_OpenGL(bus.camera.getNear(), bus.camera.getFar(), bus.camera.getvFOV(), bus.camera.getWidth(), bus.camera.getHeight());
+
         // Draws each vertex
         for (Actor3D actor : bus.world.getObjects()) {
+            // Initializes the model matrix for the specific model once
+            Mat4 model = Utility.GetModelMatrix(actor);
+
             // Transforms the vertices to a form that can be rendered on screen
             if (actor != null && actor.getShape() != null) {
                 Vec2[] drawVertices = new Vec2[actor.getShape().getVertices().length];
                 for (int i = 0; i < actor.getShape().getVertices().length; i++) {
                     //int[] cords = vertexToScreenSpace_Perspective(actor.coordinateToWorldSpace(actor.getShape().getVertices()[i]), bus.camera);
-                    Vec2 cords = getViewportCoordinates(new Vec4(actor.getShape().getVertices()[i], 1), actor, bus.camera);
+                    Vec2 cords = getViewportCoordinates(new Vec4(actor.getShape().getVertices()[i], 1), actor, bus.camera, model, view, projection);
                     drawVertices[i] = cords;
                 }
                 // Connects the draw vertices by a line
@@ -115,33 +129,14 @@ public class Render3D {
         return new Vec2(xCord, yCord);
     }
 
-    private static Vec2 getViewportCoordinates(Vec4 vertex, Actor3D actor, Camera camera) {
-        Mat4 model = Utility.GetModelMatrix(actor);
-        Mat4 view = Utility.GetWorldToCameraSpaceConversionMatrix(camera);
-        Mat4 projection = Utility.GetPerspectiveProjectionMatrix_OpenGL(camera.getNear(), camera.getFar(), camera.getvFOV(), camera.getWidth(), camera.getHeight());
+    private static Vec2 getViewportCoordinates(Vec4 vertex, Actor3D actor, Camera camera, Mat4 model, Mat4 view, Mat4 projection) {
         Vec4 outputVertex = NMath.MultiplyVec4ByMat4(NMath.MultiplyVec4ByMat4(NMath.MultiplyVec4ByMat4(vertex, model), view), projection);
+
         Vec3 output = toNormalizedDeviceCoordinates(outputVertex);
         if (Float.isInfinite(output.z)) {
             return null;
         }
         return NDCToWindow(toNormalizedDeviceCoordinates(outputVertex), camera);
-    }
-
-    private static boolean outsideClipPlane(Vec2 point, Camera camera) {
-        return point.x < 0 || point.x > camera.getWidth() || point.y < 0 || point.y > camera.getHeight();
-    }
-
-    private static boolean shouldClip(Vec2 point, Camera camera) {
-        Vec3 objectToCamera = NMath.Subtract(new Vec3(point.x, point.y, 0), camera.getPos());
-
-// Normalize the vector
-        objectToCamera = NMath.Normalize(new Vec3(objectToCamera.x, objectToCamera.y, 0));
-
-// Compute the dot product of the objectToCamera vector and the camera's view direction vector
-        float dotProduct = NMath.DotProduct(objectToCamera, camera.getFront());
-
-// If the dot product is positive, then the object is within the camera's field of view and can be rendered
-        return !(dotProduct > 0);
     }
 
 }

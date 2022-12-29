@@ -17,8 +17,10 @@ public class Camera {
     private final Vec4 forwardReference = new Vec4(0, 0, 1, 1);
 
     private float vFOV = 45; // In degrees
-    private float near = 1.0f;
-    private float far = 1.0f;
+//    private float near = 0.1f;
+//    private float far = 100.0f;
+    private float near = 0.1f;
+    private float far = 100.0f;
 
 
     public Camera(Vec3 initialPosition, Orientation initialRotation, int initialFocalLength, int initialWidth, int initialHeight) {
@@ -38,7 +40,7 @@ public class Camera {
     }
 
     public Vec3 getRight() {
-        return NMath.Normalize(NMath.CrossProduct(getFront(), NMath.Normalize(new Vec3(0, 1, 0))));
+        return NMath.Normalize(NMath.CrossProduct(getFront(), new Vec3(0, 1, 0)));
     }
 
     public Vec3 getUp() {
@@ -69,6 +71,10 @@ public class Camera {
 
     public void setRotation(Orientation rotation) {
         Rotation = rotation;
+    }
+
+    public void setRotation(Vec3 rotation) {
+        Rotation = new Orientation(rotation);
     }
 
     public void Move(Vec3 movementVector) {
