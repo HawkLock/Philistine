@@ -45,7 +45,7 @@ public class Render3D {
             Mat4 model = Utility.GetModelMatrix(actor);
 
             // Transforms the vertices to a form that can be rendered on screen
-            if (actor != null && actor.getShape() != null) {
+            if (actor.getShape() != null) {
                 Vec2[] drawVertices = new Vec2[actor.getShape().getVertices().length];
                 for (int i = 0; i < actor.getShape().getVertices().length; i++) {
                     //int[] cords = vertexToScreenSpace_Perspective(actor.coordinateToWorldSpace(actor.getShape().getVertices()[i]), bus.camera);
@@ -102,22 +102,6 @@ public class Render3D {
         g2D.drawLine((int)pointA.x, (int)pointA.y, (int)pointB.x, (int)pointB.y);
     }
 
-    private static int[] vertexToScreenSpace(Vec3 vertexPos, Camera camera) {
-        // Gets their position based off of the projection rendering formula
-        float xCord = NMath.Subtract(vertexPos, camera.getPos()).x * (camera.getFocalLength() / Math.abs(NMath.Subtract(vertexPos, camera.getPos()).z));
-        float yCord = NMath.Subtract(vertexPos, camera.getPos()).y * (camera.getFocalLength() / Math.abs(NMath.Subtract(vertexPos, camera.getPos()).z)); // Transforms the coordinates to the screen dimensions
-        //System.out.printf("%f, %f\n", xCord, yCord);
-        xCord = (xCord * camera.getWidth() + camera.getWidth()) / 2;
-        yCord = (yCord * camera.getHeight() + camera.getHeight()) / 2;
-        return new int[]{(int) xCord, (int) yCord};
-    }
-
-    private static int[] vertexToScreenSpace_Perspective (Vec4 vertexPos, Camera camera) {
-        Vec4 vertexInCameraSpace = NMath.MultiplyVec4ByMat4(vertexPos, Utility.GetWorldToCameraSpaceConversionMatrix(camera));
-        Vec4 vertexInClipSpace = NMath.MultiplyVec4ByMat4(vertexInCameraSpace, Utility.GetPerspectiveProjectionMatrix_OpenGL(camera.getNear(), camera.getFar(), camera.getvFOV(), camera.getWidth(), camera.getHeight()));
-        return vertexToScreenSpace(new Vec3(vertexInClipSpace), camera);
-    }
-
     private static Vec3 toNormalizedDeviceCoordinates(Vec4 cord) {
         return new Vec3(cord.x/cord.w, cord.y/cord.w, cord.z/cord.w);
     }
@@ -133,10 +117,10 @@ public class Render3D {
 
         Vec3 output = toNormalizedDeviceCoordinates(outputVertex);
         if (Float.isInfinite(output.z) || output.z > 1) {
-            System.out.println(output);
             return null;
         }
-        return NDCToWindow(toNormalizedDeviceCoordinates(outputVertex), camera);
+
+        return NDCToWindow(output, camera);
     }
 
 }
