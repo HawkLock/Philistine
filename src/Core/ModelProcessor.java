@@ -23,7 +23,7 @@ public class ModelProcessor {
         while (scanner.hasNextLine()) {
             // Checks if the current line should contain a vertex coordinate
             String line = scanner.nextLine();
-            if (line.substring(0, 2).equals("v ")) {
+            if (line.startsWith("v ")) {
                 float[] pos = ParseFloatsFromString(line.substring(2));
                 vertices.add(new Vec3(pos[0], pos[2], -pos[1]));
             }

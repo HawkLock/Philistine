@@ -23,12 +23,12 @@ public class Game extends JPanel {
     private final int ScreenWidth = 1000;
     private final int ScreenHeight = 1000;
 
-    private final Camera camera;
+    private static Camera camera;
     private static World world;
 
     private final float cameraMoveSpeed = 0.25f;
     private final float zoomSpeed = 0.5f;
-    private final float modelTurnSpeed = 10f;
+    private final float modelTurnSpeed = 6.0f;
     private final Vec3 cameraMovementModifier = new Vec3(1, -1, 1); // Modification because of the coordinate system mismatch
     private final Vec3 cameraNegativeMovementModifier = new Vec3(-1, 1, -1); // Modification because of the coordinate system mismatch
 
@@ -43,7 +43,7 @@ public class Game extends JPanel {
         this.setPreferredSize(new Dimension(ScreenWidth, ScreenHeight));
         this.setBackground(Color.lightGray);
 
-        camera = new Camera(new Vec3(0, 0, -3), new Orientation(0, 0, 0), 2, ScreenWidth, ScreenHeight);
+        camera = new Camera(new Vec3(0, 0, 0), new Orientation(0, 6, 0), 2, ScreenWidth, ScreenHeight);
         world = new World();
 
         SetRenderMode(mode);
@@ -63,10 +63,13 @@ public class Game extends JPanel {
 
         renderModeReference.accept(new RenderBus(camera, world, g2D));
 
+        g2D.setColor(Color.black);
+
         // Renders the frame rate
         g2D.drawString("FPS: " + currentFrameRate, 20, 20);
         g2D.drawString("Rotation: " + camera.getRotation(), 20, 50);
-        g2D.drawString("Camera Forward: " + camera.getFront(), 20, 80);
+        //g2D.drawString("Camera Forward: " + camera.getFront(), 20, 80);
+        g2D.drawString("Position: " + camera.getPos(), 20, 80);
         //System.out.println();
 
     }
@@ -137,9 +140,7 @@ public class Game extends JPanel {
 
     public void KeyReleased(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (PressedKeys.contains(Integer.valueOf(keyCode))) {
-            PressedKeys.remove(Integer.valueOf(keyCode));
-        }
+        PressedKeys.remove(Integer.valueOf(keyCode));
     }
 
     public void HandleMouseWheelInput(MouseWheelEvent e) {
@@ -158,4 +159,7 @@ public class Game extends JPanel {
     public int getWidth() {return ScreenWidth;}
     public int getHeight() {return ScreenHeight;}
     public World getWorld() {return world;}
+    public static Camera getCamera() {
+        return camera;
+    }
 }

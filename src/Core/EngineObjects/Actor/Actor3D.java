@@ -2,21 +2,33 @@ package Core.EngineObjects.Actor;
 
 import Core.EngineObjects.Physics.CollisionComponent;
 import Core.EngineObjects.Shape;
+import Core.Game;
 import Utility.Axis;
 import Utility.Math.NMath;
 import Utility.Math.Orientation;
 import Utility.Math.Vec3;
 import Utility.Math.Vec4;
 
-public class Actor3D implements Actor{
+import java.awt.*;
+
+public class Actor3D implements Actor, Comparable<Actor3D>{
     public Shape shape;
     private Orientation orientation;
-    Vec3 pos;
+    private Vec3 pos;
+    private Color color;
 
     public Actor3D(Shape initialShape, Vec3 initialPos) {
         shape = initialShape;
         pos = initialPos;
         orientation = new Orientation(0);
+        color = Color.BLACK;
+    }
+
+    public Actor3D(Shape initialShape, Vec3 initialPos, Color initialColor) {
+        shape = initialShape;
+        pos = initialPos;
+        orientation = new Orientation(0);
+        color = initialColor;
     }
 
     @Override
@@ -67,5 +79,15 @@ public class Actor3D implements Actor{
 
     public void setOrientation(Orientation orientation) {
         this.orientation = orientation;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    @Override
+    public int compareTo(Actor3D o) {
+        //return (int) ( (NMath.Distance(Game.getCamera().getPos(), this.getPos()) - this.getShape().getBoundingRadius()) - (NMath.Distance(Game.getCamera().getPos(), o.getPos()) - o.getShape().getBoundingRadius()));
+        return (int) ( (NMath.Distance(this.getPos(), Game.getCamera().getPos()) + this.getShape().getBoundingRadius()) - (NMath.Distance(o.getPos(), Game.getCamera().getPos()) + o.getShape().getBoundingRadius()));
     }
 }

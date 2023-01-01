@@ -5,8 +5,8 @@ import Utility.Math.Vec2;
 import Utility.Math.Vec3;
 
 public class CollisionComponent {
-    private Vec3 collisionVolume;
-    private Actor parent;
+    private final Vec3 collisionVolume;
+    private final Actor parent;
 
     public CollisionComponent(Vec3 initialCollisionVolume, Actor parentActor) {
         collisionVolume = initialCollisionVolume;

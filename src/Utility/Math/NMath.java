@@ -74,6 +74,10 @@ public class NMath {
         return (float) Math.sqrt(Math.pow((vecA.x-vecB.x), 2) + Math.pow((vecA.y-vecB.y), 2) + Math.pow((vecA.z-vecB.z), 2));
     }
 
+    public static Vec4 Add(Vec4 vecA, Vec4 vecB) {
+        return new Vec4(vecA.x + vecB.x, vecA.y + vecB.y, vecA.z + vecB.z, vecA.w + vecB.w);
+    }
+
     //
     //** LINE MATH **//
     //

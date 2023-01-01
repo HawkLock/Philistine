@@ -1,24 +1,33 @@
 package Core.EngineObjects;
 
-import Utility.Axis;
 import Utility.Math.NMath;
 import Utility.Math.Vec3;
-import Utility.Math.Vec4;
-import Utility.Utility;
 
 public class Shape {
 
     private Vec3 position = new Vec3();
     private final Vec3[] vertices;
     private int[][] drawOrder;
-
-    public Shape(Vec3[] initialVertices) {
-        vertices = initialVertices;
-    }
+    private float boundingRadius; // This radius is used for the simple (inaccurate) occlusion culling
 
     public Shape(Vec3[] initialVertices, int[][] initialDrawOrder) {
         vertices = initialVertices;
         drawOrder = initialDrawOrder;
+        CalculateBoundingRadius();
+        System.out.println(boundingRadius);
+    }
+
+    // Could be moved to model processor for faster initialization
+    private void CalculateBoundingRadius() {
+        Vec3 center = new Vec3();
+        float largestDistance = Integer.MIN_VALUE;
+        for (int i = 0; i < vertices.length; i++) {
+            float currentDistance = NMath.Distance(center, vertices[i]);
+            if (currentDistance > largestDistance) {
+                largestDistance = currentDistance;
+            }
+        }
+        boundingRadius = largestDistance;
     }
 
     public void Move(Vec3 moveVector) {
@@ -45,5 +54,9 @@ public class Shape {
         for (int i = 0; i < vertices.length; i++) {
             vertices[i] = NMath.Multiply(vertices[i], scalar);
         }
+    }
+
+    public float getBoundingRadius() {
+        return boundingRadius;
     }
 }

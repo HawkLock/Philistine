@@ -30,6 +30,12 @@ public class Vec3 {
         z = 0.0f;
     }
 
+    public Vec3(Vec2 vec, float newZ) {
+        x = vec.x;
+        y = vec.y;
+        z = newZ;
+    }
+
     public Vec3(Vec4 vec) {
         x = vec.x;
         y = vec.y;

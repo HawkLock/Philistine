@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class World {
 
-    private ArrayList<Actor3D> objects = new ArrayList<>();
+    private final ArrayList<Actor3D> objects = new ArrayList<>();
 
     public World() {
 

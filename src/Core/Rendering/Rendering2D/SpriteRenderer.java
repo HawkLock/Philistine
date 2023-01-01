@@ -11,10 +11,10 @@ import java.awt.*;
 
 public class SpriteRenderer {
 
-    private String spriteSource;
+    private final String spriteSource;
     private Image sprite;
     private Vec2 spriteDimensions;
-    private Actor2D parent;
+    private final Actor2D parent;
 
     public SpriteRenderer(String spritePath, Actor2D parentActor) {
         parent = parentActor;

@@ -6,10 +6,10 @@ import java.io.File;
 
 public class AnimationAsset {
 
-    private String Name;
-    private Image[] Frames;
-    private int FrameCount;
-    private boolean bLooped;
+    private final String Name;
+    private final Image[] Frames;
+    private final int FrameCount;
+    private final boolean bLooped;
 
     public AnimationAsset(String directory, String animName, boolean loopable) {
         // Get frames from supplied directory

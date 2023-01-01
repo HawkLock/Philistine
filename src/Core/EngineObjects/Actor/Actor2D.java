@@ -12,9 +12,9 @@ import Utility.Math.Vec4;
 
 public class Actor2D implements Actor{
     public Vec3 pos;
-    private SpriteRenderer spriteRenderer;
-    private AnimationComponent animComp;
-    private CollisionComponent collisionComp;
+    private final SpriteRenderer spriteRenderer;
+    private final AnimationComponent animComp;
+    private final CollisionComponent collisionComp;
 
     public Actor2D(String spritePath, Vec3 initialPos, Vec2 initialSize) {
         pos = initialPos;

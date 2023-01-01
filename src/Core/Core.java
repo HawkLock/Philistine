@@ -7,6 +7,7 @@ import Utility.Axis;
 import Utility.Math.*;
 import Utility.Utility;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 
 public class Core {
@@ -15,11 +16,14 @@ public class Core {
 
         Screen screen = new Screen(RenderMode.WIREFRAME);
         Game game = screen.getDisplay();
-        game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/plane.obj"), new Vec3(0, 0, 2)));
-        game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Cube2.obj"), new Vec3(4, 0, 0)));
-        game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/torus.obj"), new Vec3()));
-        game.getWorld().getObjects().get(0).Rotate(90, new Vec3(1, 0, 0));
-        game.getWorld().getObjects().get(0).Scale(5);
+        //game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Plane.obj"), new Vec3(0, -3, 2), Color.DARK_GRAY));
+        float objectSpacing = 3.0f;
+        game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Cube2.obj"), new Vec3(0, 0, objectSpacing), Color.blue));
+        game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Icosphere.obj"), new Vec3(-objectSpacing, 0, 0), Color.yellow));
+        game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Sphere.obj"), new Vec3(objectSpacing, 0, 0), Color.green));
+        game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Torus.obj"), new Vec3(0, 0, -objectSpacing), Color.red));
+        //game.getWorld().getObjects().get(0).Rotate(270, new Vec3(1, 0, 0));
+        //game.getWorld().getObjects().get(0).Scale(5);
 
         boolean bRunning = true;
         while (bRunning) {

@@ -9,7 +9,7 @@ public class InputSystem {
     ArrayList<VirtualKey> boundKeys;
     ArrayList<Runnable> boundFunctions = new ArrayList<>();
 
-    private Game parent;
+    private final Game parent;
 
     public InputSystem(Game initParent) {
         parent = initParent;

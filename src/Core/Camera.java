@@ -9,16 +9,14 @@ import java.awt.image.renderable.RenderableImage;
 public class Camera {
 
     private Vec3 Pos;
-    private int FocalLength;
-    private int Width;
-    private int Height;
+    private final int FocalLength;
+    private final int Width;
+    private final int Height;
     private Orientation Rotation;
 
     private final Vec4 forwardReference = new Vec4(0, 0, 1, 1);
 
-    private float vFOV = 45; // In degrees
-//    private float near = 0.1f;
-//    private float far = 100.0f;
+    private float vFOV = 60; // In degrees
     private float near = 0.1f;
     private float far = 100.0f;
 
@@ -50,6 +48,10 @@ public class Camera {
 
     public void Rotate(Orientation rotationChange) {
         Rotation = NMath.Add(Rotation, rotationChange);
+    }
+
+    public void Rotate(Vec4 rotationChange) {
+        Rotation = NMath.Add(Rotation, new Orientation(rotationChange));
     }
 
     public void Rotate(Vec3 rotationChange) {
