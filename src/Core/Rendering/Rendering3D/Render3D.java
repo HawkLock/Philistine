@@ -209,16 +209,7 @@ public class Render3D {
 
     private static RenderVec getViewportCoordinates(Vec4 vertex, Camera camera, Mat4 model, Mat4 view, Mat4 projection) {
         Vec4 outputVertex = NMath.MultiplyVec4ByMat4(NMath.MultiplyVec4ByMat4(NMath.MultiplyVec4ByMat4(vertex, model), view), projection);
-
-        Vec3 output = toNormalizedDeviceCoordinates(outputVertex);
-        int zValue = 1; // Successful
-        if (Float.isInfinite(output.z)) {
-            return null;
-        }
-        if (output.z > 1) {
-            zValue = 0;
-        }
-        return new RenderVec(new Vec3(NDCToWindow(output, camera), zValue), vertex);
+        return new RenderVec(getViewportCoordinates(outputVertex, camera), vertex);
     }
 
     // This version takes in an already fully transformed vertex up until the projection coordinate system
