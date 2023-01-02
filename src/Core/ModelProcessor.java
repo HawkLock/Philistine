@@ -28,7 +28,6 @@ public class ModelProcessor {
                 vertices.add(new Vec3(pos[0], pos[2], -pos[1]));
             }
         }
-        System.out.printf("%s has %d vertices\n", path, vertices.size());
         scanner.close();
         // Converts arraylist of vertices into easier to use array
         return convertArraylistToArrayVec3(vertices);
@@ -114,6 +113,7 @@ public class ModelProcessor {
         for (int i = 0; i < list.size(); i++) {
             arr[i] = list.get(i);
         }
+        System.out.println(Arrays.deepToString(arr));
         return arr;
     }
 

@@ -87,7 +87,6 @@ public class Actor3D implements Actor, Comparable<Actor3D>{
 
     @Override
     public int compareTo(Actor3D o) {
-        //return (int) ( (NMath.Distance(Game.getCamera().getPos(), this.getPos()) - this.getShape().getBoundingRadius()) - (NMath.Distance(Game.getCamera().getPos(), o.getPos()) - o.getShape().getBoundingRadius()));
         return (int) ( (NMath.Distance(this.getPos(), Game.getCamera().getPos()) + this.getShape().getBoundingRadius()) - (NMath.Distance(o.getPos(), Game.getCamera().getPos()) + o.getShape().getBoundingRadius()));
     }
 }

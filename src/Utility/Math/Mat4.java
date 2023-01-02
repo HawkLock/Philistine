@@ -61,6 +61,10 @@ public class Mat4 {
         return elements;
     }
 
+    public void set(int column, int row, float value) {
+        elements[row][column] = value;
+    }
+
     public String toString() {
         String str = "";
         for (int i = 0; i < 4; i++) {

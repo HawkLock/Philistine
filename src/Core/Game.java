@@ -1,13 +1,13 @@
 package Core;
 
-import Core.Camera;
 import Core.EngineObjects.World.World;
 import Core.Rendering.RenderBus;
 import Core.Rendering.RenderMode;
-import Core.Rendering.Rendering2D.Render2D;
 import Core.Rendering.Rendering3D.Render3D;
-import Utility.Axis;
-import Utility.Math.*;
+import Utility.Math.NMath;
+import Utility.Math.Orientation;
+import Utility.Math.Vec3;
+import Utility.Math.Vec4;
 import Utility.Utility;
 
 import javax.swing.*;
@@ -27,8 +27,8 @@ public class Game extends JPanel {
     private static World world;
 
     private final float cameraMoveSpeed = 0.25f;
+    private final float cameraTurnSpeed = 6.0f;
     private final float zoomSpeed = 0.5f;
-    private final float modelTurnSpeed = 6.0f;
     private final Vec3 cameraMovementModifier = new Vec3(1, -1, 1); // Modification because of the coordinate system mismatch
     private final Vec3 cameraNegativeMovementModifier = new Vec3(-1, 1, -1); // Modification because of the coordinate system mismatch
 
@@ -102,16 +102,16 @@ public class Game extends JPanel {
 
         // Camera ROTATION
         if (PressedKeys.contains(Integer.valueOf(39))) {
-            camera.Rotate(new Vec3(0, modelTurnSpeed, 0));
+            camera.Rotate(new Vec3(0, cameraTurnSpeed, 0));
         }
         if (PressedKeys.contains(Integer.valueOf(37))) {
-            camera.Rotate(new Vec3(0, -modelTurnSpeed, 0));
+            camera.Rotate(new Vec3(0, -cameraTurnSpeed, 0));
         }
         if (PressedKeys.contains(Integer.valueOf(40))) {
-            camera.Rotate(new Vec3(-modelTurnSpeed, 0, 0));
+            camera.Rotate(new Vec3(-cameraTurnSpeed, 0, 0));
         }
         if (PressedKeys.contains(Integer.valueOf(38))) {
-            camera.Rotate(new Vec3(modelTurnSpeed, 0, 0));
+            camera.Rotate(new Vec3(cameraTurnSpeed, 0, 0));
         }
 
         // ZOOMING IN AND OUT

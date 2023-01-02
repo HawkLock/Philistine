@@ -1,10 +1,9 @@
 package Core;
 
-import Utility.Axis;
-import Utility.Math.*;
-import Utility.Utility;
-
-import java.awt.image.renderable.RenderableImage;
+import Utility.Math.NMath;
+import Utility.Math.Orientation;
+import Utility.Math.Vec3;
+import Utility.Math.Vec4;
 
 public class Camera {
 
@@ -14,11 +13,9 @@ public class Camera {
     private final int Height;
     private Orientation Rotation;
 
-    private final Vec4 forwardReference = new Vec4(0, 0, 1, 1);
-
     private float vFOV = 60; // In degrees
     private float near = 0.1f;
-    private float far = 100.0f;
+    private float far = 1000.0f;
 
 
     public Camera(Vec3 initialPosition, Orientation initialRotation, int initialFocalLength, int initialWidth, int initialHeight) {
@@ -117,10 +114,6 @@ public class Camera {
 
     public void setFar(float far) {
         this.far = far;
-    }
-
-    public Vec4 getForwardReference() {
-        return forwardReference;
     }
 
 }
