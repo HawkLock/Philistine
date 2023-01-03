@@ -3,18 +3,27 @@ package Core.EngineObjects;
 import Utility.Math.NMath;
 import Utility.Math.Vec3;
 
+import java.awt.*;
+
 public class Shape {
 
     private Vec3 position = new Vec3();
     private final Vec3[] vertices;
     private int[][] drawOrder;
     private float boundingRadius; // This radius is used for the simple (inaccurate) occlusion culling
+    private Color[] polygonColors;
 
     public Shape(Vec3[] initialVertices, int[][] initialDrawOrder) {
         vertices = initialVertices;
         drawOrder = initialDrawOrder;
         CalculateBoundingRadius();
-        System.out.println(boundingRadius);
+    }
+
+    public Shape(Vec3[] initialVertices, int[][] initialDrawOrder, Color[] initialPolygonColors) {
+        vertices = initialVertices;
+        drawOrder = initialDrawOrder;
+        CalculateBoundingRadius();
+        polygonColors = initialPolygonColors;
     }
 
     // Could be moved to model processor for faster initialization
@@ -58,5 +67,9 @@ public class Shape {
 
     public float getBoundingRadius() {
         return boundingRadius;
+    }
+
+    public Color[] getPolygonColors() {
+        return polygonColors;
     }
 }

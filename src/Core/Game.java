@@ -82,6 +82,7 @@ public class Game extends JPanel {
         switch (newMode) {
             case SOLID -> renderModeReference = Render3D::Render_Solid;
             case WIREFRAME -> renderModeReference = Render3D::Render_Wireframe;
+            case POLYGON_OUTLINE -> renderModeReference = Render3D::Render_WithPolygonOutlines;
         }
     }
 
@@ -128,6 +129,9 @@ public class Game extends JPanel {
         }
         if (PressedKeys.contains((int) '2')) {
             SetRenderMode(RenderMode.WIREFRAME);
+        }
+        if (PressedKeys.contains((int) '3')) {
+            SetRenderMode(RenderMode.POLYGON_OUTLINE);
         }
     }
 

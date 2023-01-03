@@ -27,7 +27,10 @@ public class Core {
         //game.getWorld().getObjects().get(0).Scale(5);
         int mapWidth = 10;
         int mapDepth = 10;
-        game.getWorld().AddActor(new Actor3D(ProceduralWorldGenerator.GenerateMap(mapWidth, mapDepth, 5), new Vec3(mapWidth, 0, mapDepth), Color.DARK_GRAY));
+        float amplitude = 1.0f;
+        float maxHeight = 10.0f;
+        //game.getWorld().AddActor(new Actor3D(ProceduralWorldGenerator.GenerateMap(mapWidth, mapDepth, 5, amplitude, maxHeight), new Vec3(-mapWidth, -15, -mapDepth), Color.DARK_GRAY));
+        game.getWorld().AddActor(new Actor3D(ProceduralWorldGenerator.GenerateMapFromNoiseInput("src/Assets/References/Perlin Noise Lowest Res.png", amplitude, maxHeight), new Vec3(-mapWidth, -15, -mapDepth), Color.DARK_GRAY));
 
         boolean bRunning = true;
         while (bRunning) {

@@ -11,6 +11,12 @@ import java.util.ArrayList;
 
 public class Render3D {
 
+    // Most computationally expensive
+    public static void Render_WithPolygonOutlines(RenderBus bus) {
+        Render_Solid(bus);
+        Render_Wireframe(bus);
+    }
+
     public static void Render_Solid(RenderBus bus) {
         // Initializes the view matrix and projection matrix because those do not change throughout the frame
         Mat4 view = Utility.GetWorldToCameraSpaceConversionMatrix(bus.camera);
@@ -31,15 +37,24 @@ public class Render3D {
             }
             // Draws each polygon (no depth culling currently)
             bus.g2D.setColor(actors.get(z).getColor());
-            drawFace(drawVertices, actors.get(z).getShape().getDrawOrder(), bus.camera, model, view, projection, bus.g2D);
+            drawFace(drawVertices, actors.get(z), bus.camera, model, view, projection, bus.g2D);
         }
     }
 
-    private static void drawFace(RenderVec[] drawVertices, int[][] drawOrder, Camera camera, Mat4 model, Mat4 view, Mat4 projection, Graphics2D g2D) {
+    private static void drawFace(RenderVec[] drawVertices, Actor3D actor, Camera camera, Mat4 model, Mat4 view, Mat4 projection, Graphics2D g2D) {
+        int[][] drawOrder = actor.getShape().getDrawOrder();
+        Color[] polygonColors = actor.getShape().getPolygonColors();
         for (int i = 0 ; i < drawOrder.length; i++) {
             RenderVec[] currentVertices = new RenderVec[drawOrder[i].length];
             for (int z = 0; z < drawOrder[i].length; z++) {
                 currentVertices[z] = drawVertices[drawOrder[i][z]-1];
+            }
+            if (polygonColors != null) {
+                if (polygonColors.length > i) {
+                    g2D.setColor(polygonColors[i]);
+                } else {
+                    g2D.setColor(actor.getColor());
+                }
             }
             ArrayList<RenderVec> outOfViewVertices = new ArrayList<>();
             for (int v = 0; v < currentVertices.length; v++) {
@@ -137,6 +152,7 @@ public class Render3D {
                     drawVertices[i] = cords;
                 }
                 // Connects the draw vertices by a line
+                bus.g2D.setColor(Color.black);
                 drawConnectingLinesBoolean(drawVertices, actor.getShape().getDrawOrder(), bus.camera, model, view, projection, bus.g2D);
             }
         }
