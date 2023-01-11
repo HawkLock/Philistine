@@ -25,7 +25,7 @@ public class Render3D {
         bus.world.getObjects().sort(null);
         ArrayList<Actor3D> actors = bus.world.getObjects();
 
-        for (int z = 0; z < actors.size(); z++) {
+        for (int z = actors.size()-1; z > -1; z--) {
             // Initializes the model matrix for the specific model once
             Mat4 model = Utility.GetModelMatrix(actors.get(z));
 
