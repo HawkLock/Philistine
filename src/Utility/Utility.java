@@ -106,18 +106,27 @@ public class Utility {
         });
     }
 
+    // OLD
+//    public static Mat4 GetWorldToCameraSpaceConversionMatrix(Camera camera) {
+//        Vec3 lookAt = camera.getFront();
+//        Vec3 right = camera.getRight();
+//        Vec3 up = camera.getUp();
+//        Mat4 rotationMatrix = new Mat4(new float[][] {
+//                {right.x, up.x, lookAt.x, 0},
+//                {right.y, up.y, lookAt.y, 0},
+//                {right.z, up.z, lookAt.z, 0},
+//                {0, 0, 0, 1}
+//        });
+//        Mat4 translationMatrix = GetTranslationMatrix(camera.getPos().x, camera.getPos().y, camera.getPos().z);
+//        return NMath.MultiplyMat4(rotationMatrix, translationMatrix);
+//    }
     public static Mat4 GetWorldToCameraSpaceConversionMatrix(Camera camera) {
         Vec3 lookAt = camera.getFront();
-        Vec3 right = camera.getRight();
         Vec3 up = camera.getUp();
-        Mat4 rotationMatrix = new Mat4(new float[][] {
-                {right.x, up.x, lookAt.x, 0},
-                {right.y, up.y, lookAt.y, 0},
-                {right.z, up.z, lookAt.z, 0},
-                {0, 0, 0, 1}
-        });
-        Mat4 translationMatrix = GetTranslationMatrix(camera.getPos().x, camera.getPos().y, camera.getPos().z);
-        return NMath.MultiplyMat4(rotationMatrix, translationMatrix);
+        Vec3 pos = camera.getPos();
+        Mat4 rotationMatrix = Mat4.lookAt(pos, NMath.Add(pos, lookAt), up);
+        Mat4 translationMatrix = Utility.GetTranslationMatrix(-pos.x, -pos.y, -pos.z);
+        return NMath.MultiplyMat4(translationMatrix, rotationMatrix);
     }
 
     public static Mat4 GetModelMatrix(Actor3D actor) {

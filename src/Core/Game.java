@@ -4,11 +4,7 @@ import Core.EngineObjects.World.World;
 import Core.Rendering.RenderBus;
 import Core.Rendering.RenderMode;
 import Core.Rendering.Rendering3D.Render3D;
-import Utility.Math.NMath;
-import Utility.Math.Orientation;
-import Utility.Math.Vec3;
-import Utility.Math.Vec4;
-import Utility.Utility;
+import Utility.Math.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,10 +23,9 @@ public class Game extends JPanel {
     private static World world;
 
     private final float cameraMoveSpeed = 0.25f;
-    private final float cameraTurnSpeed = 6.0f;
+    private final float cameraTurnSpeed = 1000.0f;
+    private final float cameraTurnSpeedModifier = 3; // Used in the rotation axis for camera rotation (Note: I don't know how quaternions work)
     private final float zoomSpeed = 0.5f;
-    private final Vec3 cameraMovementModifier = new Vec3(1, -1, 1); // Modification because of the coordinate system mismatch
-    private final Vec3 cameraNegativeMovementModifier = new Vec3(-1, 1, -1); // Modification because of the coordinate system mismatch
 
     private static double deltaTime = 0.0f;
     private double lastFrame = 0.0f;
@@ -43,7 +38,7 @@ public class Game extends JPanel {
         this.setPreferredSize(new Dimension(ScreenWidth, ScreenHeight));
         this.setBackground(Color.lightGray);
 
-        camera = new Camera(new Vec3(0, 0, 0), new Orientation(0, 6, 0), 2, ScreenWidth, ScreenHeight);
+        camera = new Camera(new Vec3(0, 0, 0), new Quaternion(0, 0, 6, 0), 2, ScreenWidth, ScreenHeight);
         world = new World();
 
         SetRenderMode(mode);
@@ -89,38 +84,41 @@ public class Game extends JPanel {
     public void HandleInput() {
         // MOVEMENT
         if (PressedKeys.contains((int) 'W')) {
-            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), cameraMoveSpeed), cameraMovementModifier));
+            camera.Move(NMath.Multiply(camera.getFront(), cameraMoveSpeed));
         }
         if (PressedKeys.contains((int) 'S')) {
-            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), cameraMoveSpeed), cameraNegativeMovementModifier));
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), cameraMoveSpeed), -1));
         }
         if (PressedKeys.contains((int) 'D')) {
-            camera.Move(NMath.Multiply(NMath.Multiply(camera.getRight(), cameraMoveSpeed), cameraNegativeMovementModifier));
-        }
+            camera.Move(NMath.Multiply(camera.getRight(), cameraMoveSpeed));}
         if (PressedKeys.contains((int) 'A')) {
-            camera.Move(NMath.Multiply(NMath.Multiply(camera.getRight(), cameraMoveSpeed), cameraMovementModifier));
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getRight(), cameraMoveSpeed), -1));
         }
 
         // Camera ROTATION
         if (PressedKeys.contains(Integer.valueOf(39))) {
-            camera.Rotate(new Vec3(0, cameraTurnSpeed, 0));
+            //camera.Rotate(new Quaternion(0, cameraTurnSpeed, 0));
+            camera.Rotate(Quaternion.GetQuaternionRotation(-cameraTurnSpeed, new Vec3(0, cameraTurnSpeedModifier, 0)));
         }
         if (PressedKeys.contains(Integer.valueOf(37))) {
-            camera.Rotate(new Vec3(0, -cameraTurnSpeed, 0));
+            //camera.Rotate(new Vec3(0, -cameraTurnSpeed, 0));
+            camera.Rotate(Quaternion.GetQuaternionRotation(cameraTurnSpeed, new Vec3(0, cameraTurnSpeedModifier, 0)));
         }
-        if (PressedKeys.contains(Integer.valueOf(40))) {
-            camera.Rotate(new Vec3(-cameraTurnSpeed, 0, 0));
+        if (PressedKeys.contains(Integer.valueOf(40))) { // DOWN
+            //camera.Rotate(new Vec3(-cameraTurnSpeed, 0, 0));
+            camera.Rotate(Quaternion.GetQuaternionRotation(-cameraTurnSpeed, new Vec3(cameraTurnSpeedModifier, 0, 0)));
         }
-        if (PressedKeys.contains(Integer.valueOf(38))) {
-            camera.Rotate(new Vec3(cameraTurnSpeed, 0, 0));
+        if (PressedKeys.contains(Integer.valueOf(38))) { // UP
+            //camera.Rotate(new Vec3(cameraTurnSpeed, 0, 0));
+            camera.Rotate(Quaternion.GetQuaternionRotation(cameraTurnSpeed, new Vec3(cameraTurnSpeedModifier, 0, 0)));
         }
 
         // ZOOMING IN AND OUT
         if (PressedKeys.contains((int) 'E')) {
-            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed), cameraMovementModifier));
+            camera.Move(NMath.Multiply(camera.getFront(), zoomSpeed));
         }
         if (PressedKeys.contains((int) 'Q')) {
-            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed), cameraNegativeMovementModifier));
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed), -1));
         }
 
         // SETTING RENDERING MODES
@@ -149,10 +147,10 @@ public class Game extends JPanel {
 
     public void HandleMouseWheelInput(MouseWheelEvent e) {
         if (e.getWheelRotation() < 0) {
-            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed), cameraMovementModifier));
+            camera.Move(NMath.Multiply(camera.getFront(), zoomSpeed));
         }
         else {
-            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), zoomSpeed),cameraNegativeMovementModifier));
+            camera.Move(NMath.Multiply(camera.getFront(), zoomSpeed));
         }
     }
 

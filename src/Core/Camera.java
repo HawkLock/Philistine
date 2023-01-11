@@ -1,9 +1,6 @@
 package Core;
 
-import Utility.Math.NMath;
-import Utility.Math.Orientation;
-import Utility.Math.Vec3;
-import Utility.Math.Vec4;
+import Utility.Math.*;
 
 public class Camera {
 
@@ -11,14 +8,14 @@ public class Camera {
     private final int FocalLength;
     private final int Width;
     private final int Height;
-    private Orientation Rotation;
+    private Quaternion Rotation;
 
     private float vFOV = 60; // In degrees
     private float near = 0.1f;
-    private float far = 1000.0f;
+    private float far = 100000.0f;
 
 
-    public Camera(Vec3 initialPosition, Orientation initialRotation, int initialFocalLength, int initialWidth, int initialHeight) {
+    public Camera(Vec3 initialPosition, Quaternion initialRotation, int initialFocalLength, int initialWidth, int initialHeight) {
         Pos = initialPosition;
         FocalLength = initialFocalLength;
         Width = initialWidth;
@@ -28,9 +25,9 @@ public class Camera {
 
     public Vec3 getFront() {
         Vec3 direction = new Vec3();
-        direction.z = (float) (Math.cos(NMath.toRadians(Rotation.y)) * Math.cos(NMath.toRadians(Rotation.x)));
-        direction.y = (float) Math.sin(NMath.toRadians(Rotation.x));
         direction.x = (float) (Math.sin(NMath.toRadians(Rotation.y)) * Math.cos(NMath.toRadians(Rotation.x)));
+        direction.y = (float) Math.sin(NMath.toRadians(Rotation.x));
+        direction.z = (float) (Math.cos(NMath.toRadians(Rotation.y)) * Math.cos(NMath.toRadians(Rotation.x)));
         return NMath.Normalize(direction);
     }
 
@@ -42,19 +39,9 @@ public class Camera {
         return NMath.Normalize(NMath.CrossProduct(getRight(), getFront()));
     }
 
-
-    public void Rotate(Orientation rotationChange) {
+    public void Rotate(Quaternion rotationChange) {
         Rotation = NMath.Add(Rotation, rotationChange);
     }
-
-    public void Rotate(Vec4 rotationChange) {
-        Rotation = NMath.Add(Rotation, new Orientation(rotationChange));
-    }
-
-    public void Rotate(Vec3 rotationChange) {
-        Rotation = NMath.Add(Rotation, new Orientation(rotationChange));
-    }
-
 
     public Vec3 getPos() {
         return Pos;
@@ -64,16 +51,12 @@ public class Camera {
         Pos = pos;
     }
 
-    public Orientation getRotation() {
+    public Quaternion getRotation() {
         return Rotation;
     }
 
-    public void setRotation(Orientation rotation) {
+    public void setRotation(Quaternion rotation) {
         Rotation = rotation;
-    }
-
-    public void setRotation(Vec3 rotation) {
-        Rotation = new Orientation(rotation);
     }
 
     public void Move(Vec3 movementVector) {

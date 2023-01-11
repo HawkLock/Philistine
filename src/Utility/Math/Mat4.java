@@ -1,5 +1,7 @@
 package Utility.Math;
 
+import Utility.Utility;
+
 public class Mat4 {
 
     float[][] elements;
@@ -63,6 +65,27 @@ public class Mat4 {
 
     public void set(int column, int row, float value) {
         elements[row][column] = value;
+    }
+
+    public static Mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up) {
+        Vec3 f = NMath.Normalize(NMath.Subtract(center, eye));
+        Vec3 u = NMath.Normalize(up);
+        Vec3 s = NMath.Normalize(NMath.CrossProduct(f, u));
+        u = NMath.CrossProduct(s, f);
+
+        Mat4 rotation = new Mat4();
+        rotation.set(0,0,s.x);
+        rotation.set(1,0,s.y);
+        rotation.set(2,0,s.z);
+        rotation.set(0,1,u.x);
+        rotation.set(1,1,u.y);
+        rotation.set(2,1,u.z);
+        rotation.set(0,2,-f.x);
+        rotation.set(1,2,-f.y);
+        rotation.set(2,2,-f.z);
+
+        Mat4 translation = Utility.GetTranslationMatrix(-eye.x, -eye.y, -eye.z);
+        return NMath.MultiplyMat4(rotation, translation);
     }
 
     public String toString() {

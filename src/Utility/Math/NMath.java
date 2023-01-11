@@ -159,4 +159,39 @@ public class NMath {
         return new Orientation(clamp(rotA.x + rotB.x, -90, 90), (rotA.y + rotB.y) % 360, rotA.z + rotB.z);
     }
 
+    //
+    //** QUATERNION MATH **//
+    //
+
+    public static Quaternion Add(Quaternion quatA, Quaternion quatB) {
+        float w = quatA.w + quatB.w;
+        float x = quatA.x + quatB.x;
+        float y = quatA.y + quatB.y;
+        float z = quatA.z + quatB.z;
+        return new Quaternion(w, x, y, z);
+    }
+
+    public static Quaternion Multiply(Quaternion quatA, Quaternion quatB) {
+        float w = quatA.w*quatB.w - quatA.x*quatB.x - quatA.y*quatB.y - quatA.z*quatB.z;
+        float x = quatA.w*quatB.x + quatB.w*quatA.x + quatA.y*quatB.z - quatA.z*quatB.y;
+        float y = quatA.w*quatB.y - quatB.z*quatA.x + quatA.y*quatB.w + quatA.z*quatB.x;
+        float z = quatA.w*quatB.z + quatA.x*quatB.y - quatA.y*quatB.x + quatA.z*quatB.w;
+        return new Quaternion(w, x, y, z);
+    }
+
+    public static Vec3 Multiply(Quaternion quat, Vec3 vec) {
+        float x = vec.x*quat.w + vec.y*quat.z - vec.z*quat.y;
+        float y = quat.w*vec.y - vec.x*quat.z + vec.z*quat.x;
+        float z = quat.w*vec.z + vec.x*quat.y - vec.y*quat.x;
+        return new Vec3(x, y, z);
+    }
+
+    public static Quaternion Divide(Quaternion quat, float scalar) {
+        return new Quaternion(quat.w/scalar, quat.x/scalar, quat.y/scalar, quat.z/scalar);
+    }
+
+    public static Vec3 RotateVec3ByQuat(Vec3 vec, Quaternion quat) {
+        return NMath.Multiply(quat.GetInverse(), NMath.Multiply(quat, vec));
+    }
+
 }
