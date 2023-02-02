@@ -24,7 +24,7 @@ public class Game extends JPanel {
 
     private final float cameraMoveSpeed = 0.25f;
     private final float cameraTurnSpeed = 1000.0f;
-    private final float cameraTurnSpeedModifier = 3; // Used in the rotation axis for camera rotation (Note: I don't know how quaternions work)
+    private final float cameraTurnSpeedModifier = 5; // Used in the rotation axis for camera rotation (Note: I don't know how quaternions work)
     private final float zoomSpeed = 0.5f;
 
     private static double deltaTime = 0.0f;
@@ -90,7 +90,8 @@ public class Game extends JPanel {
             camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), cameraMoveSpeed), -1));
         }
         if (PressedKeys.contains((int) 'D')) {
-            camera.Move(NMath.Multiply(camera.getRight(), cameraMoveSpeed));}
+            camera.Move(NMath.Multiply(camera.getRight(), cameraMoveSpeed));
+        }
         if (PressedKeys.contains((int) 'A')) {
             camera.Move(NMath.Multiply(NMath.Multiply(camera.getRight(), cameraMoveSpeed), -1));
         }
@@ -150,7 +151,7 @@ public class Game extends JPanel {
             camera.Move(NMath.Multiply(camera.getFront(), zoomSpeed));
         }
         else {
-            camera.Move(NMath.Multiply(camera.getFront(), zoomSpeed));
+            camera.Move(NMath.Multiply(NMath.Multiply(camera.getFront(), cameraMoveSpeed), -1));
         }
     }
 

@@ -23,6 +23,7 @@ public class Core {
         game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Icosphere.obj"), new Vec3(-objectSpacing, 0, 0), Color.yellow));
         game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Sphere.obj"), new Vec3(objectSpacing, 0, 0), Color.green));
         game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Torus.obj"), new Vec3(0, 0, -objectSpacing), Color.red));
+        game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Torus.obj"), new Vec3(3, 0, -objectSpacing), Color.black));
         //game.getWorld().getObjects().get(0).Rotate(270, new Vec3(1, 0, 0));
         //game.getWorld().getObjects().get(0).Scale(5);
         int mapWidth = 10;
