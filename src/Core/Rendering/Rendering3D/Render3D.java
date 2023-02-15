@@ -42,6 +42,38 @@ public class Render3D {
         }
     }
 
+    public static void Render_Solid(RenderBus bus) {
+        // Initializes the view matrix and projection matrix because those do not change throughout the frame
+        Mat4 view = Utility.GetWorldToCameraSpaceConversionMatrix(bus.camera);
+        Mat4 projection = Utility.GetPerspectiveProjectionMatrix_OpenGL(bus.camera.getNear(), bus.camera.getFar(), bus.camera.getvFOV(), bus.camera.getWidth(), bus.camera.getHeight());
+
+        ArrayList<Actor3D> actors = bus.world.getObjects();
+        Queue<Polygon> polygonQueue = new PriorityQueue<>();
+
+        for (int z = 0; z < actors.size(); z++) {
+            // Initializes the model matrix for the specific model once
+            Mat4 model = Utility.GetModelMatrix(actors.get(z));
+
+            // Transforms the vertices to a form that can be rendered on screen
+            RenderVec[] drawVertices = new RenderVec[actors.get(z).getShape().getVertices().length];
+            for (int i = 0; i < actors.get(z).getShape().getVertices().length; i++) {
+                RenderVec cords = getViewportCoordinates(new Vec4(actors.get(z).getShape().getVertices()[i], 1), bus.camera, model, view, projection);
+                drawVertices[i] = cords;
+            }
+            // Draws each polygon (no depth culling currently)
+            //bus.g2D.setColor(actors.get(z).getColor());
+            //drawFace(drawVertices, actors.get(z), bus.camera, model, view, projection, bus.g2D);
+            polygonQueue.addAll(Objects.requireNonNull(constructPolygon(drawVertices, actors.get(z), bus.camera, model, view, projection)));
+        }
+
+        System.out.println("NEW\n\n\n\n");
+        while (!polygonQueue.isEmpty()) {
+            Polygon polygon = polygonQueue.poll();
+            System.out.printf("Distance: %f\n", polygon.getDistanceFromCamera());
+            DrawPolygon(polygon, bus.g2D);
+        }
+    }
+
     private static void drawFace(RenderVec[] drawVertices, Actor3D actor, Camera camera, Mat4 model, Mat4 view, Mat4 projection, Graphics2D g2D) {
         int[][] drawOrder = actor.getShape().getDrawOrder();
         Color[] polygonColors = actor.getShape().getPolygonColors();
@@ -108,6 +140,84 @@ public class Render3D {
                 g2D.fillPolygon(cords[0], cords[1], drawOrder[i].length);
             }
         }
+    }
+
+    private static ArrayList<Polygon> constructPolygon(RenderVec[] drawVertices, Actor3D actor, Camera camera, Mat4 model, Mat4 view, Mat4 projection) {
+        ArrayList<Polygon> renderPolygons = new ArrayList<>();
+        int[][] drawOrder = actor.getShape().getDrawOrder();
+        Color[] polygonColors = actor.getShape().getPolygonColors();
+        for (int i = 0 ; i < drawOrder.length; i++) {
+            RenderVec[] currentVertices = new RenderVec[drawOrder[i].length];
+            for (int z = 0; z < drawOrder[i].length; z++) {
+                currentVertices[z] = drawVertices[drawOrder[i][z]-1];
+            }
+            Color polygonColor = null;
+            if (polygonColors != null) {
+                if (polygonColors.length > i) {
+                    polygonColor = polygonColors[i];
+                }
+            } else {
+                polygonColor = actor.getColor();
+            }
+            ArrayList<RenderVec> outOfViewVertices = new ArrayList<>();
+            for (int v = 0; v < currentVertices.length; v++) {
+                if (currentVertices[v] == null) {
+                    return null;
+                }
+                if (currentVertices[v].getDrawVec().z == 0) {
+                    outOfViewVertices.add(currentVertices[v]);
+                }
+            }
+            // If all the vertices are out of view there is no point in rendering it, so it does not
+            if (outOfViewVertices.size() < currentVertices.length) {
+                if (outOfViewVertices.size() > 0) {
+                    ArrayList<RenderVec> visiblePolygon = new ArrayList<>();
+                    // Goes through vertices and acts like its connecting lines, it adds the valid vertex to a new array that makes up the visible polygon
+                    for (int a = 0; a < currentVertices.length; a++) {
+                        // If the previous was an intersection (it gets added) then it must add the start and end points of this iteration or else it will skip the start
+                        RenderVec start = currentVertices[a];
+                        RenderVec end = currentVertices[(a+1)%currentVertices.length];
+
+                        // Determine if one point must be clipped, else simply add the end point
+                        if (start.getDrawVec().z == 0 ^ end.getDrawVec().z == 0) {
+                            RenderVec visibleVec;
+                            RenderVec clippingVec;
+                            if (start.getDrawVec().z == 0) {
+                                clippingVec = start;
+                                visibleVec = end;
+                            } else {
+                                visibleVec = start;
+                                clippingVec = end;
+                            }
+                            Vec3 clippedTransformedVec = ClipVertexBasedOnViewIntersection(visibleVec, clippingVec, camera, model, view, projection);
+                            visiblePolygon.add(new RenderVec(clippedTransformedVec, clippingVec.getWorldVec()));
+                            if (end.getDrawVec().z != 0) {
+                                visiblePolygon.add(end);
+                            }
+                        } else if (start.getDrawVec().z == 0) {
+                        } else {
+                            visiblePolygon.add(end);
+                        }
+                    }
+                    //renderPolygons.add(new Polygon(visiblePolygon, polygonColor));
+                    renderPolygons.add(new Polygon(visiblePolygon, polygonColor, camera));
+                    //int[][] cords = getDrawPolygonCords(visiblePolygon);
+                    //g2D.fillPolygon(cords[0], cords[1], visiblePolygon.size());
+                    continue;
+                }
+                //renderPolygons.add(new Polygon(currentVertices, polygonColor));
+                renderPolygons.add(new Polygon(currentVertices, polygonColor, camera));
+                //int[][] cords = getDrawPolygonCords(currentVertices);
+                //g2D.fillPolygon(cords[0], cords[1], drawOrder[i].length);
+            }
+        }
+        return renderPolygons;
+    }
+
+    private static void DrawPolygon(Polygon polygon, Graphics2D g2D) {
+        int[][] cords = getDrawPolygonCords(polygon.getVertices());
+        g2D.setColor(polygon.getColor());
+        g2D.fillPolygon(cords[0], cords[1], cords[0].length);
     }
 
     private static int[][] getDrawPolygonCords(RenderVec[] vectors) {

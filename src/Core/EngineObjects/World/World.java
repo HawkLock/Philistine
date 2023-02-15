@@ -3,6 +3,7 @@ package Core.EngineObjects.World;
 import Core.EngineObjects.Actor.Actor;
 import Core.EngineObjects.Actor.Actor3D;
 import Utility.Math.Vec2;
+import Utility.Math.Vec3;
 
 import java.util.ArrayList;
 
@@ -38,6 +39,14 @@ public class World {
     public void AddActor(Actor3D actor) {
         objects.add(actor);
         //System.out.printf("Vertices: %d\n", actor.shape.getVertices().length);
+    }
+
+    public void GenerateWorld(int width, int depth, float scale, float amplitude, float maxHeight) {
+        AddActor(ProceduralWorldGenerator.GenerateMapActor(width, depth, scale, amplitude, maxHeight));
+    }
+
+    public void GenerateWorldFromInput(String path, float amplitude, float maxHeight) {
+        AddActor(ProceduralWorldGenerator.GenerateMapActorFromNoiseInput(path, amplitude, maxHeight));
     }
 
     public ArrayList<Actor3D> getObjects() {

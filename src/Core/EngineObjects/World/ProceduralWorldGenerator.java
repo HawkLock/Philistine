@@ -1,5 +1,6 @@
 package Core.EngineObjects.World;
 
+import Core.EngineObjects.Actor.Actor3D;
 import Core.EngineObjects.Shape;
 import Utility.Math.Vec3;
 
@@ -22,8 +23,11 @@ public class ProceduralWorldGenerator {
             Color.WHITE
     };
 
+    public static Actor3D GenerateMapActor(int width, int height, float scale, float amplitude, float maxHeight) {
+        return new Actor3D(GenerateMap(width, height, scale, amplitude, maxHeight), new Vec3(-width/2, 0, -height/2));
+    }
+
     public static Shape GenerateMap(int width, int height, float scale, float amplitude, float maxHeight) {
-        //float[][] heightMap = GenerateHeightMapFromPicture("src/Assets/References/Perlin Noise Low Res.png");
         float[][] heightMap = GenerateHeightMap(width, height, maxHeight);
         Vec3[] vertices = GenerateMapVertices(heightMap, scale, amplitude);
         Color[] polygonColors = new Color[(width-1)*(height-1)*2];
@@ -31,9 +35,13 @@ public class ProceduralWorldGenerator {
         return new Shape(vertices, drawOrder, polygonColors);
     }
 
-    public static Shape GenerateMapFromNoiseInput(String path, float amplitude, float maxHeight) {
+    public static Actor3D GenerateMapActorFromNoiseInput(String path, float amplitude, float maxHeight) {
         BufferedImage img = getImageFromPath(path);
         assert img != null;
+        return new Actor3D(GenerateMapFromNoiseInput(img, amplitude, maxHeight), new Vec3(-img.getWidth()/2, -10, -img.getHeight()/2));
+    }
+
+    public static Shape GenerateMapFromNoiseInput(BufferedImage img, float amplitude, float maxHeight) {
         float[][] heightMap = GenerateHeightMapFromPicture(img, amplitude, maxHeight);
         Vec3[] vertices = GenerateMapVertices(heightMap, 1, amplitude);
         int width = img.getWidth();
