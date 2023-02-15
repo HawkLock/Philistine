@@ -3,7 +3,6 @@ package Core.EngineObjects.Actor;
 import Core.EngineObjects.Physics.CollisionComponent;
 import Core.EngineObjects.Shape;
 import Core.Game;
-import Utility.Axis;
 import Utility.Math.NMath;
 import Utility.Math.Orientation;
 import Utility.Math.Vec3;

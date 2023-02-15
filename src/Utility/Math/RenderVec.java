@@ -22,6 +22,10 @@ public class RenderVec {
         return WorldVec;
     }
 
+    public Vec3 getWorldVec3() {
+        return new Vec3(WorldVec);
+    }
+
     public void setWorldVec(Vec4 worldVec) {
         WorldVec = worldVec;
     }

@@ -37,6 +37,7 @@ public class World {
 
     public void AddActor(Actor3D actor) {
         objects.add(actor);
+        //System.out.printf("Vertices: %d\n", actor.shape.getVertices().length);
     }
 
     public ArrayList<Actor3D> getObjects() {

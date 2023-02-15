@@ -93,10 +93,10 @@ public class ProceduralWorldGenerator {
         for (int y = 0; y < height-1; y++) {
             for (int x = 0; x < width-1; x++) {
                 //drawOrder[index] = new int[]{vertexIndex, vertexIndex+width+1, vertexIndex+width};
-                ConstructPolygon(drawOrder, index, new int[]{vertexIndex, vertexIndex+width+1, vertexIndex+width}, vertices, polygonColors);
+                ConstructPolygon(drawOrder, index, new int[]{vertexIndex, vertexIndex+width-1, vertexIndex+width}, vertices, polygonColors);
                 index++;
                 //drawOrder[index] = new int[]{vertexIndex+width+1, vertexIndex, vertexIndex+1};
-                ConstructPolygon(drawOrder, index, new int[]{vertexIndex+width+1, vertexIndex, vertexIndex+1}, vertices, polygonColors);
+                ConstructPolygon(drawOrder, index, new int[]{vertexIndex+width, vertexIndex, vertexIndex+1}, vertices, polygonColors);
                 index++;
                 vertexIndex++;
             }

@@ -2,7 +2,7 @@ package Core;
 
 import Core.EngineObjects.World.World;
 import Core.Rendering.RenderBus;
-import Core.Rendering.RenderMode;
+import Core.Rendering.Rendering3D.RenderMode;
 import Core.Rendering.Rendering3D.Render3D;
 import Utility.Math.*;
 
@@ -77,7 +77,7 @@ public class Game extends JPanel {
         switch (newMode) {
             case SOLID -> renderModeReference = Render3D::Render_Solid;
             case WIREFRAME -> renderModeReference = Render3D::Render_Wireframe;
-            case POLYGON_OUTLINE -> renderModeReference = Render3D::Render_WithPolygonOutlines;
+            case HYBRID -> renderModeReference = Render3D::Render_WithPolygonOutlines;
         }
     }
 
@@ -129,7 +129,7 @@ public class Game extends JPanel {
             SetRenderMode(RenderMode.WIREFRAME);
         }
         if (PressedKeys.contains((int) '3')) {
-            SetRenderMode(RenderMode.POLYGON_OUTLINE);
+            SetRenderMode(RenderMode.HYBRID);
         }
     }
 

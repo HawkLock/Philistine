@@ -1,6 +1,7 @@
 package Core.Rendering;
 
 import Core.Game;
+import Core.Rendering.Rendering3D.RenderMode;
 
 import javax.swing.*;
 import java.awt.event.*;

@@ -4,7 +4,6 @@ import Core.EngineObjects.Physics.CollisionComponent;
 import Core.EngineObjects.Shape;
 import Core.Rendering.Rendering2D.AnimationComponent;
 import Core.Rendering.Rendering2D.SpriteRenderer;
-import Utility.Axis;
 import Utility.Math.NMath;
 import Utility.Math.Vec2;
 import Utility.Math.Vec3;

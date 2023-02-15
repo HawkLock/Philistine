@@ -1,9 +1,9 @@
-package Core.Rendering;
+package Core.Rendering.Rendering3D;
 
 public enum RenderMode {
     SOLID,
     WIREFRAME,
-    POLYGON_OUTLINE,
+    HYBRID,
     TEXTURE,
     SPRITE
 }

@@ -2,8 +2,6 @@ package Core.EngineObjects.Actor;
 
 import Core.EngineObjects.Physics.CollisionComponent;
 import Core.EngineObjects.Shape;
-import Utility.Axis;
-import Utility.Math.NMath;
 import Utility.Math.Vec3;
 import Utility.Math.Vec4;
 

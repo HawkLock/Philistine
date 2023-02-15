@@ -2,11 +2,9 @@ package Core;
 
 import Core.EngineObjects.Actor.Actor3D;
 import Core.EngineObjects.World.ProceduralWorldGenerator;
-import Core.Rendering.RenderMode;
+import Core.Rendering.Rendering3D.RenderMode;
 import Core.Rendering.Screen;
-import Utility.Axis;
 import Utility.Math.*;
-import Utility.Utility;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
@@ -23,6 +21,7 @@ public class Core {
         game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Icosphere.obj"), new Vec3(-objectSpacing, 0, 0), Color.yellow));
         game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Sphere.obj"), new Vec3(objectSpacing, 0, 0), Color.green));
         game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Torus.obj"), new Vec3(0, 0, -objectSpacing), Color.red));
+        game.getWorld().AddActor(new Actor3D(ModelProcessor.GetShapeFromObj("src/Assets/Models/Pyramid.obj"), new Vec3(0, 0, -objectSpacing), Color.red));
         //game.getWorld().getObjects().get(0).Rotate(270, new Vec3(1, 0, 0));
         //game.getWorld().getObjects().get(0).Scale(5);
         int mapWidth = 10;
